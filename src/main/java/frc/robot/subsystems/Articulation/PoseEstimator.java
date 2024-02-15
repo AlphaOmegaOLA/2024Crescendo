@@ -14,16 +14,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.rev.RevSwerveConfig;
 
-public class PoseEstimator extends SubsystemBase {
+public class PoseEstimator extends SubsystemBase 
+{
   /** Creates a new PoseEstimator. */
   public SwerveDrivePoseEstimator sEstimator;
   public Pose2d visionPose = new Pose2d();
   
-  public PoseEstimator() {
+  public PoseEstimator() 
+  {
     sEstimator = new SwerveDrivePoseEstimator(
       RevSwerveConfig.swerveKinematics,
       new Rotation2d(),
-      new SwerveModulePosition[] {
+      new SwerveModulePosition[] 
+      {
         new SwerveModulePosition(),
         new SwerveModulePosition(),
         new SwerveModulePosition(),
@@ -37,7 +40,8 @@ public class PoseEstimator extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
+  public void periodic() 
+  {
     // This method will be called once per scheduler run
   }
 }

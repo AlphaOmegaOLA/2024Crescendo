@@ -15,7 +15,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class TeleopSwerve extends Command {    
+public class TeleopSwerve extends Command 
+{    
     private RevSwerve s_Swerve;    
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
@@ -43,14 +44,16 @@ public class TeleopSwerve extends Command {
     }
 
     @Override
-    public void execute() {
+    public void execute() 
+    {
         /* Get Values, Deadband*/
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband) * (dampen.getAsBoolean() ? 0.2 : 1) * ((speedDial.getAsDouble() + 1) / 2);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband) * (dampen.getAsBoolean() ? 0.2 : 1) * ((speedDial.getAsDouble() + 1) / 2);
         double  rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband) * (dampen.getAsBoolean() ? 0.2 : 1) * ((speedDial.getAsDouble() + 1) / 2);
 
         //heading direction state
-        switch(States.driveState){
+        switch(States.driveState)
+        {
             case d0:
 
                 //heading lock

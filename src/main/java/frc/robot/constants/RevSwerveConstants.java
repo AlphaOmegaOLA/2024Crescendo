@@ -25,10 +25,12 @@ public final class RevSwerveConstants
        
     
     }
-    public static final class Swerve {
+    public static final class Swerve 
+    {
         /* Module Specific Constants */
-    /* Front Left Module */
-        public static final class Mod0 { 
+        /* Front Left Module */
+        public static final class Mod0 
+        { 
 
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 3;
@@ -38,7 +40,8 @@ public final class RevSwerveConstants
                 new RevSwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
         /* Front Right Module */
-        public static final class Mod1 { 
+        public static final class Mod1 
+        { 
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 12;
             public static final int canCoderID = 11;
@@ -47,7 +50,8 @@ public final class RevSwerveConstants
                 new RevSwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
         /* Back Left Module */
-        public static final class Mod2 { 
+        public static final class Mod2 
+        { 
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 5;
@@ -56,7 +60,8 @@ public final class RevSwerveConstants
                 new RevSwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
          /* Back Right Module */
-        public static final class Mod3 { 
+        public static final class Mod3 
+        { 
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 9;
             public static final int canCoderID = 8;
@@ -66,13 +71,4 @@ public final class RevSwerveConstants
         }
         
     }
-
-     
-
-    
-    
-    
-
-   
-
 }
