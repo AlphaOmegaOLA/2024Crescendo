@@ -13,19 +13,19 @@ public class Shooter extends SubsystemBase
 
     public Shooter()
     {
-        leftShooterMotor = new CANSparkMax(ShooterIntakeConstants.Shooter.leftShooterMotorID, MotorType.kBrushless);
-        rightShooterMotor = new CANSparkMax(ShooterIntakeConstants.Shooter.rightShooterMotorID, MotorType.kBrushless);
+        leftShooterMotor = new CANSparkMax(ShooterIntakeConstants.Shooter.LEFT_SHOOTER_MOTOR_ID, MotorType.kBrushless);
+        rightShooterMotor = new CANSparkMax(ShooterIntakeConstants.Shooter.RIGHT_SHOOTER_MOTOR_ID, MotorType.kBrushless);
     }
 
     public void shootAmp()
     {
-        leftShooterMotor.set(ShooterIntakeConstants.Shooter.halfSpeed);
-        rightShooterMotor.set(ShooterIntakeConstants.Shooter.halfSpeed);
+        leftShooterMotor.set(ShooterIntakeConstants.Shooter.HALF_SPEED);
+        rightShooterMotor.set(ShooterIntakeConstants.Shooter.HALF_SPEED);
     }
 
     public void shootSpeaker()
     {
-        leftShooterMotor.set(ShooterIntakeConstants.Shooter.fullSpeed);
-        rightShooterMotor.set(ShooterIntakeConstants.Shooter.fullSpeed);
+        leftShooterMotor.set(ShooterIntakeConstants.Shooter.FULL_SPEED);
+        rightShooterMotor.set(ShooterIntakeConstants.Shooter.FULL_SPEED);
     }
 }
