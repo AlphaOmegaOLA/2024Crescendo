@@ -19,7 +19,22 @@ public final class ShooterIntakeConstants
         // Need to determine the starting offset angle of the
         // Rev Through Bore Encoder and set it here:
         public static final Rotation2d ARM_ENCODER_OFFSET = Rotation2d.fromDegrees(0);
+        public static final double ARM_FLOOR_ANGLE = 5.0;
+        public static final double ARM_SOURCE_ANGLE = 90.0;
+        public static final double ARM_AMP_ANGLE = 90.0;
+        public static final double ARM_SPEAKER_ANGLE = 5.0;
+
         public static final int ARM_CURRENT_LIMIT = 40;
+        public static final double ARM_UPDATE_OUTPUT = .02;
+        public static final double ARM_MAX_VELOCITY = 1.75;
+        public static final double ARM_MAX_ACCELERATION = .75;
+        public static final double ARM_P = 1.3;
+        public static final double ARM_I = 0.0;
+        public static final double ARM_D = 0.7;
+        public static final double ARM_S = 1.1;
+        public static final double ARM_G = 1.2;
+        public static final double ARM_V = 1.3;
+
     }
 
     public static final class Shooter 
