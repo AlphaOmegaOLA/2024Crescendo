@@ -7,7 +7,8 @@ import frc.robot.subsystems.ShooterIntake.RevThroughBoreEncoder;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkBase.IdleMode;;
+import com.revrobotics.CANSparkBase.IdleMode;
+
 
 public class Arm extends SubsystemBase 
 {
@@ -25,6 +26,7 @@ public class Arm extends SubsystemBase
         //rightArmMotor.setInverted(true);
         armEncoder = new RevThroughBoreEncoder(ShooterIntakeConstants.Arm.ARM_ENCODER_ID);
         armEncoder.setOffset(ShooterIntakeConstants.Arm.ARM_ENCODER_OFFSET);
+
         //armEncoder.setInverted(true);
     }
 
@@ -33,6 +35,7 @@ public class Arm extends SubsystemBase
         //encoders
         //PID
         //motors
+        
 
 
     }
