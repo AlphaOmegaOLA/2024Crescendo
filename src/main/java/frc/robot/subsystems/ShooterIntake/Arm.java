@@ -86,5 +86,10 @@ public class Arm extends SubsystemBase
     {
         setAngle(ShooterIntakeConstants.Arm.ARM_SPEAKER_ANGLE);
     }
+
+    public void climb()
+    {
+        setAngle(ShooterIntakeConstants.Arm.ARM_CLIMB_ANGLE);
+    }
 }
 

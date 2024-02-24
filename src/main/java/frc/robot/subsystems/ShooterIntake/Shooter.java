@@ -28,4 +28,10 @@ public class Shooter extends SubsystemBase
         leftShooterMotor.set(ShooterIntakeConstants.Shooter.FULL_SPEED);
         rightShooterMotor.set(ShooterIntakeConstants.Shooter.FULL_SPEED);
     }
+
+    public void stop()
+    {
+        leftShooterMotor.set(0);
+        rightShooterMotor.set(0);
+    }
 }

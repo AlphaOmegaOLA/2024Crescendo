@@ -24,4 +24,9 @@ public class Intake extends SubsystemBase
     {
         intakeMotor.set(ShooterIntakeConstants.Intake.FULL_SPEED);
     }
+
+    public void stop()
+    {
+        intakeMotor.set(0);
+    }
 }
