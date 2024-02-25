@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Articulation.PoseEstimator;
 import frc.robot.subsystems.swerve.rev.RevSwerve;
+import frc.robot.subsystems.ShooterIntake.Arm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -42,9 +43,13 @@ public class RobotContainer
     private final POVButton right = new POVButton(driver, 180);
     private final POVButton left = new POVButton(driver, 0);
 
+    /* Operator Buttons */
+    
+
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
     private final PoseEstimator s_PoseEstimator = new PoseEstimator();
+    private final Arm s_Arm = new Arm();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
