@@ -15,12 +15,7 @@ public class Intake extends SubsystemBase
         intakeMotor = new CANSparkMax(ShooterIntakeConstants.Intake.INTAKE_MOTOR_ID, MotorType.kBrushless);
     }
 
-    public void intakeFloor()
-    {
-        intakeMotor.set(ShooterIntakeConstants.Intake.FULL_SPEED);
-    }
-
-    public void intakeSourceZone()
+    public void intake()
     {
         intakeMotor.set(ShooterIntakeConstants.Intake.FULL_SPEED);
     }

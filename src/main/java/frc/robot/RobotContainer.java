@@ -10,7 +10,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Articulation.PoseEstimator;
+import frc.robot.subsystems.ShooterIntake.Arm;
+import frc.robot.subsystems.ShooterIntake.Intake;
 import frc.robot.subsystems.swerve.rev.RevSwerve;
+import frc.robot.constants.ControllerMap;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -32,17 +35,26 @@ public class RobotContainer
 
     
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, 8);
-
-    private final JoystickButton dampen = new JoystickButton(driver, 6);
-
+    private final JoystickButton zeroGyro = new JoystickButton(driver, ControllerMap.LOGO_RIGHT);
+    private final JoystickButton dampen = new JoystickButton(driver, ControllerMap.RB);
     private final POVButton up = new POVButton(driver, 90);
     private final POVButton down = new POVButton(driver, 270);
     private final POVButton right = new POVButton(driver, 180);
     private final POVButton left = new POVButton(driver, 0);
 
+    /* Operator Buttons */
+    private final JoystickButton arm_source = new JoystickButton(operator, ControllerMap.B);
+    private final JoystickButton arm_floor = new JoystickButton(operator, ControllerMap.X);
+    private final JoystickButton arm_speaker = new JoystickButton(operator, ControllerMap.Y);
+    private final JoystickButton arm_amp = new JoystickButton(operator, ControllerMap.A);
+    private final JoystickButton arm_climb = new JoystickButton(operator, ControllerMap.RB);
+    private final JoystickButton intake = new JoystickButton(operator, ControllerMap.LEFT_TRIGGER);
+    private final JoystickButton shoot = new JoystickButton(operator, ControllerMap.RIGHT_TRIGGER);
+
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
+    private final Arm s_Arm = new Arm();
+    private final Intake s_Intake = new Intake();
     private final PoseEstimator s_PoseEstimator = new PoseEstimator();
 
 
@@ -61,9 +73,6 @@ public class RobotContainer
             )
         );
 
-
-
-
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -78,7 +87,6 @@ public class RobotContainer
     {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-
 
         //heading lock bindings
         up.onTrue(
@@ -98,6 +106,16 @@ public class RobotContainer
             new InstantCommand(() -> States.driveState = States.DriveStates.standard)
             );
 
+        arm_source.onTrue(new InstantCommand(() -> s_Arm.intakeSource(), s_Arm));
+        arm_floor.onTrue(new InstantCommand(() -> s_Arm.intakeFloor(), s_Arm));
+        arm_speaker.onTrue(new InstantCommand(() -> s_Arm.shootSpeaker(), s_Arm));
+        arm_amp.onTrue(new InstantCommand(() -> s_Arm.shootAmp(), s_Arm));
+        arm_climb.onTrue(new InstantCommand(() -> s_Arm.climb(), s_Arm));
+
+        intake.onTrue(
+            new InstantCommand(() -> s_Intake.intake(), s_Intake)).onFalse(
+            new InstantCommand(() -> s_Intake.stop(), s_Intake)
+            );
     }
 
     /**
