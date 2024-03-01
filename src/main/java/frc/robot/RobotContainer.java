@@ -6,12 +6,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Articulation.PoseEstimator;
 import frc.robot.subsystems.ShooterIntake.Arm;
 import frc.robot.subsystems.ShooterIntake.Intake;
+import frc.robot.subsystems.ShooterIntake.Shooter;
 import frc.robot.subsystems.swerve.rev.RevSwerve;
 import frc.robot.constants.ControllerMap;
 
@@ -49,12 +51,14 @@ public class RobotContainer
     private final JoystickButton arm_amp = new JoystickButton(operator, ControllerMap.A);
     private final JoystickButton arm_climb = new JoystickButton(operator, ControllerMap.RB);
     private final JoystickButton intake = new JoystickButton(operator, ControllerMap.LEFT_TRIGGER);
-    private final JoystickButton shoot = new JoystickButton(operator, ControllerMap.RIGHT_TRIGGER);
+    private final JoystickButton shootSpeaker = new JoystickButton(operator, ControllerMap.RIGHT_TRIGGER);
+    private final JoystickButton shootAmp = new JoystickButton(operator, ControllerMap.LB);
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
     private final Arm s_Arm = new Arm();
     private final Intake s_Intake = new Intake();
+    private final Shooter s_Shooter = new Shooter();
     private final PoseEstimator s_PoseEstimator = new PoseEstimator();
 
 
@@ -116,6 +120,30 @@ public class RobotContainer
             new InstantCommand(() -> s_Intake.intake(), s_Intake)).onFalse(
             new InstantCommand(() -> s_Intake.stop(), s_Intake)
             );
+
+        shootSpeaker.onTrue(
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Intake.intake(), s_Intake)
+                )).onFalse(
+                    new SequentialCommandGroup(
+                        new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
+                        new InstantCommand(() -> s_Intake.stop(), s_Intake)
+                    )
+                );
+
+        shootAmp.onTrue(
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> s_Shooter.shootAmp(), s_Shooter),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Intake.intake(), s_Intake)
+                )).onFalse(
+                    new SequentialCommandGroup(
+                        new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
+                        new InstantCommand(() -> s_Intake.stop(), s_Intake)
+                    )
+                );
     }
 
     /**
