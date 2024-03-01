@@ -56,6 +56,7 @@ public class RobotContainer
     private final Arm s_Arm = new Arm();
     private final Intake s_Intake = new Intake();
     private final PoseEstimator s_PoseEstimator = new PoseEstimator();
+    private final Arm s_Arm = new Arm();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
