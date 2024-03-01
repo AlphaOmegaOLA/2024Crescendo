@@ -11,8 +11,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 public class Arm extends SubsystemBase 
 {
+    private DigitalInput photoEye = new DigitalInput(ShooterIntakeConstants.Arm.PHOTOEYE_DIO_ID);
     private CANSparkMax leftArmMotor;
     private CANSparkMax rightArmMotor;
     private RevThroughBoreEncoder armEncoder;
@@ -58,13 +61,21 @@ public class Arm extends SubsystemBase
     {
         controller.setGoal(angle); // double Degrees
 
-        leftArmMotor.setVoltage(
-            controller.calculate(armEncoder.getAngle().getDegrees())
-                + feedForward.calculate(controller.getSetpoint().velocity));
+        if (!tooFar())
+        {
+            leftArmMotor.setVoltage(
+                controller.calculate(armEncoder.getAngle().getDegrees())
+                    + feedForward.calculate(controller.getSetpoint().velocity));
 
-        rightArmMotor.setVoltage(
-            controller.calculate(armEncoder.getAngle().getDegrees())
-                + feedForward.calculate(controller.getSetpoint().velocity));
+            rightArmMotor.setVoltage(
+                controller.calculate(armEncoder.getAngle().getDegrees())
+                    + feedForward.calculate(controller.getSetpoint().velocity));
+        }
+        else
+        {
+            leftArmMotor.setVoltage(0);
+            rightArmMotor.setVoltage(0);
+        }
     }
 
     public void intakeFloor()
@@ -90,6 +101,12 @@ public class Arm extends SubsystemBase
     public void climb()
     {
         setAngle(ShooterIntakeConstants.Arm.ARM_CLIMB_ANGLE);
+    }
+
+    public boolean tooFar()
+    {
+        // Can invert this with ! if wiring is backwards
+        return photoEye.get();
     }
 }
 

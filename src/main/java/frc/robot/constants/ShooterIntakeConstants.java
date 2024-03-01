@@ -22,6 +22,9 @@ public final class ShooterIntakeConstants
         public static final double QUARTER_SPEED = QUARTER;
         public static final int ARM_ENCODER_ID = 0;
 
+        //ARM PHOTOEYE LIMIT SWITCH
+        public static final int PHOTOEYE_DIO_ID = 1;
+
         // ARM ANGLES
         // Need to determine the starting offset angle of the
         // Rev Through Bore Encoder and set it here:
@@ -60,6 +63,7 @@ public final class ShooterIntakeConstants
     public static final class Intake 
     {
         public static final int INTAKE_MOTOR_ID = 22;
+        public static final int PHOTOEYE_DIO_ID = 0;
         public static final double FULL_SPEED = FULL;
         public static final double HALF_SPEED = HALF;
         public static final double QUARTER_SPEED = QUARTER;
