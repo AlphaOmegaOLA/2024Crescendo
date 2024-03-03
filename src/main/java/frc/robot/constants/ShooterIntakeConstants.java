@@ -15,15 +15,15 @@ public final class ShooterIntakeConstants
     public static final class Arm 
     {
         // ARM MOTOR IDS AND SPEEDS
-        public static final int LEFT_ARM_MOTOR_ID = 23;
-        public static final int RIGHT_ARM_MOTOR_ID = 24;
+        public static final int LEFT_ARM_MOTOR_ID = 8;
+        public static final int RIGHT_ARM_MOTOR_ID = 11;
         public static final double FULL_SPEED = FULL;
         public static final double HALF_SPEED = HALF;
         public static final double QUARTER_SPEED = QUARTER;
         public static final int ARM_ENCODER_ID = 0;
 
         //ARM PHOTOEYE LIMIT SWITCH
-        public static final int PHOTOEYE_DIO_ID = 1;
+        public static final int PHOTOEYE_DIO_ID = 0;
 
         // ARM ANGLES
         // Need to determine the starting offset angle of the
@@ -52,8 +52,8 @@ public final class ShooterIntakeConstants
     /* SHOOTER PORTION OF SHOOTERINTAKE SUBSYSTEM */
     public static final class Shooter 
     {
-        public static final int LEFT_SHOOTER_MOTOR_ID = 20;
-        public static final int RIGHT_SHOOTER_MOTOR_ID = 21;
+        public static final int LEFT_SHOOTER_MOTOR_ID = 10;
+        public static final int RIGHT_SHOOTER_MOTOR_ID = 9;
         public static final double FULL_SPEED = FULL;
         public static final double HALF_SPEED = HALF;
         public static final double QUARTER_SPEED = QUARTER;
@@ -62,8 +62,8 @@ public final class ShooterIntakeConstants
     /* INTAKE PORTION OF SHOOTERINTAKE SUBSYSTEMS */
     public static final class Intake 
     {
-        public static final int INTAKE_MOTOR_ID = 22;
-        public static final int PHOTOEYE_DIO_ID = 0;
+        public static final int INTAKE_MOTOR_ID = 0;
+        public static final int PHOTOEYE_DIO_ID = 1;
         public static final double FULL_SPEED = FULL;
         public static final double HALF_SPEED = HALF;
         public static final double QUARTER_SPEED = QUARTER;
