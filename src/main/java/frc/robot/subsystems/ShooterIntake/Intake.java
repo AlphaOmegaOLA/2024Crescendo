@@ -5,6 +5,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Intake extends SubsystemBase
 {
     private CANSparkMax intakeMotor;
@@ -37,5 +39,10 @@ public class Intake extends SubsystemBase
     {
         // Can invert this with ! if wiring is backwards
         return photoEye.get();
+    }
+
+    public void periodic()
+    {
+        SmartDashboard.putBoolean("HAS NOTE", hasNote());
     }
 }

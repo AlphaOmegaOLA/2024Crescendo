@@ -13,6 +13,8 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Arm extends SubsystemBase 
 {
     private DigitalInput photoEye = new DigitalInput(ShooterIntakeConstants.Arm.PHOTOEYE_DIO_ID);
@@ -107,6 +109,12 @@ public class Arm extends SubsystemBase
     {
         // Can invert this with ! if wiring is backwards
         return photoEye.get();
+    }
+
+    public void periodic()
+    {
+        SmartDashboard.putNumber("ARM ANGLE", armEncoder.getAngle().getDegrees());
+        SmartDashboard.putNumber("ARM OFFSET", armEncoder.getOffset());
     }
 }
 
