@@ -148,7 +148,8 @@ public class RobotContainer
                         new InstantCommand(() -> s_Intake.stop(), s_Intake)
                     )
                 );
-        */        
+        */ 
+    }       
         
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
