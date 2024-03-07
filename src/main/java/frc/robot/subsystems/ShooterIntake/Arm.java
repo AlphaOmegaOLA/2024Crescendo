@@ -94,6 +94,11 @@ public class Arm extends SubsystemBase
     {
         setAngle(ShooterIntakeConstants.Arm.ARM_AMP_ANGLE);
     }
+    
+    public void shootLong()
+    {
+        setAngle(ShooterIntakeConstants.Arm.ARM_LONGSHOT_ANGLE);
+    }
 
     public void shootSpeaker()
     {
@@ -114,7 +119,7 @@ public class Arm extends SubsystemBase
     public void periodic()
     {
         SmartDashboard.putNumber("ARM ANGLE", armEncoder.getAngle().getDegrees());
-        SmartDashboard.putNumber("ARM OFFSET", armEncoder.getOffset());
+        SmartDashboard.putNumber("ARM OFFSET", armEncoder.getOffset().getDegrees());
     }
 }
 

@@ -148,11 +148,13 @@ public class RevSwerve extends SubsystemBase
     @Override
     public void periodic() 
     {
+        /* 
         SmartDashboard.putNumber("yaw", gyro.getYaw().getValueAsDouble());
         for(SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("REV Mod " + mod.getModuleNumber() + " Cancoder", mod.getCanCoder().getDegrees());
             SmartDashboard.putNumber("REV Mod " + mod.getModuleNumber() + " Integrated", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("REV Mod " + mod.getModuleNumber() + " Velocity", mod.getState().speedMetersPerSecond);    
         }
+        */
     }
 }

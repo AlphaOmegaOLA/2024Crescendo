@@ -1,10 +1,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -26,8 +26,8 @@ import frc.robot.constants.ControllerMap;
 public class RobotContainer 
 {
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
-    private final Joystick operator = new Joystick(1);
+    private final XboxController driver = new XboxController(0);
+    private final XboxController operator = new XboxController(1);
 
     /* Drive Controls */
     private final int translationAxis = 1;
@@ -45,14 +45,14 @@ public class RobotContainer
     private final POVButton left = new POVButton(driver, 0);
 
     /* Operator Buttons */
-    private final JoystickButton arm_source = new JoystickButton(operator, ControllerMap.B);
-    private final JoystickButton arm_floor = new JoystickButton(operator, ControllerMap.X);
-    private final JoystickButton arm_speaker = new JoystickButton(operator, ControllerMap.Y);
-    private final JoystickButton arm_amp = new JoystickButton(operator, ControllerMap.A);
-    private final JoystickButton arm_climb = new JoystickButton(operator, ControllerMap.RB);
-    private final JoystickButton intake = new JoystickButton(operator, ControllerMap.LEFT_TRIGGER);
-    private final JoystickButton shootSpeaker = new JoystickButton(operator, ControllerMap.RIGHT_TRIGGER);
-    private final JoystickButton shootAmp = new JoystickButton(operator, ControllerMap.LB);
+    private final JoystickButton arm_source = new JoystickButton(operator, XboxController.Button.kB.value);
+    private final JoystickButton arm_floor = new JoystickButton(operator, XboxController.Button.kX.value);
+    private final JoystickButton arm_speaker = new JoystickButton(operator, XboxController.Button.kY.value);
+    private final JoystickButton arm_amp = new JoystickButton(operator, XboxController.Button.kA.value);
+    private final JoystickButton arm_climb = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+    private final JoystickButton arm_longshot = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+    private final POVButton shootSpeaker = new POVButton(operator, 90);
+    private final POVButton shootAmp = new POVButton(operator, 270);
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
@@ -60,7 +60,6 @@ public class RobotContainer
     private final Intake s_Intake = new Intake();
     private final Shooter s_Shooter = new Shooter();
     private final PoseEstimator s_PoseEstimator = new PoseEstimator();
-
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -76,6 +75,21 @@ public class RobotContainer
                 () -> 1 //speed multiplier 
             )
         );
+
+        var intakeCommand = new RunCommand(() -> 
+        {
+            double leftY = operator.getLeftY(); // Get the Y value of the left joystick
+            if (Math.abs(leftY) > 0.1) 
+            { // Deadzone check
+                s_Intake.intake(leftY);
+            } 
+            else 
+            {
+                s_Intake.stop(); // Stop the motor
+            }
+        }, s_Intake); 
+
+        intakeCommand.schedule();
 
         // Configure the button bindings
         configureButtonBindings();
@@ -115,17 +129,13 @@ public class RobotContainer
         arm_speaker.onTrue(new InstantCommand(() -> s_Arm.shootSpeaker(), s_Arm));
         arm_amp.onTrue(new InstantCommand(() -> s_Arm.shootAmp(), s_Arm));
         arm_climb.onTrue(new InstantCommand(() -> s_Arm.climb(), s_Arm));
-
-        intake.onTrue(
-            new InstantCommand(() -> s_Intake.intake(), s_Intake)).onFalse(
-            new InstantCommand(() -> s_Intake.stop(), s_Intake)
-            );
+        arm_longshot.onTrue(new InstantCommand(() -> s_Arm.shootLong(), s_Arm));
 
         shootSpeaker.onTrue(
                 new SequentialCommandGroup(
                     new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
                     new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.intake(), s_Intake)
+                    new InstantCommand(() -> s_Intake.intake(1.0), s_Intake)
                 )).onFalse(
                     new SequentialCommandGroup(
                         new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
@@ -137,7 +147,7 @@ public class RobotContainer
                 new SequentialCommandGroup(
                     new InstantCommand(() -> s_Shooter.shootAmp(), s_Shooter),
                     new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.intake(), s_Intake)
+                    new InstantCommand(() -> s_Intake.intake(1.0), s_Intake)
                 )).onFalse(
                     new SequentialCommandGroup(
                         new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
