@@ -74,12 +74,12 @@ public class Arm extends SubsystemBase
         if (angle > ShooterIntakeConstants.Arm.ARM_AMP_ANGLE)
         {
             progress = angle / ShooterIntakeConstants.Arm.ARM_FLOOR_ANGLE;
-            rotations = 160 * progress;
+            rotations = 161 * progress;
             leftEncoder.setPosition(0);
             while (armEncoder.getAngle().getDegrees() < angle && leftEncoder.getPosition() <= rotations)
             {
-                leftArmMotor.set(.2);
-                rightArmMotor.set(.2);
+                leftArmMotor.set(.5);
+                rightArmMotor.set(.5);
                 SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
             }
             leftEncoder.setPosition(0);
@@ -89,12 +89,12 @@ public class Arm extends SubsystemBase
         if (angle < ShooterIntakeConstants.Arm.ARM_FLOOR_ANGLE)
         {
             progress = angle / ShooterIntakeConstants.Arm.ARM_AMP_ANGLE;
-            rotations = -160 * progress;
+            rotations = -161 * progress;
             leftEncoder.setPosition(0);
             while (armEncoder.getAngle().getDegrees() > angle  && leftEncoder.getPosition() >= -160)
             {
-                leftArmMotor.set(-.2);
-                rightArmMotor.set(-.2);
+                leftArmMotor.set(-.5);
+                rightArmMotor.set(-.5);
                 SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
             }
             leftArmMotor.set(0);

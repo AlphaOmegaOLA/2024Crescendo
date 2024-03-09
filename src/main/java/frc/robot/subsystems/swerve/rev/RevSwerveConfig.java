@@ -1,26 +1,30 @@
 package frc.robot.subsystems.swerve.rev;
+
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
+import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.swerveUtil.COTSFalconSwerveConstants;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 
 public class RevSwerveConfig 
-{   
-    public CANcoderConfiguration canCoderConfig;
+{
+    
+    public CANCoderConfiguration canCoderConfig;
 
+    //
     public static final IdleMode driveIdleMode = IdleMode.kBrake;
     public static final IdleMode angleIdleMode = IdleMode.kBrake;
     public static final double drivePower = 1;
     public static final double anglePower = .9;
 
-    // Always ensure Gyro is CCW+ CW-
-    public static final boolean invertGyro = false;
+
+    public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
     public static final COTSFalconSwerveConstants chosenModule =  
         COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
@@ -30,6 +34,7 @@ public class RevSwerveConfig
     public static final double wheelBase = Units.inchesToMeters(23.75); 
     public static final double wheelCircumference = chosenModule.wheelCircumference;
 
+
     /* Swerve Kinematics 
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
      public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
@@ -37,6 +42,7 @@ public class RevSwerveConfig
         new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
         new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
         new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+
 
     /* Module Gear Ratios */
     public static final double driveGearRatio = chosenModule.driveGearRatio;
@@ -48,6 +54,7 @@ public class RevSwerveConfig
     public static final double driveRpmToMetersPerSecond = driveRevToMeters/60 ;
     // the number of degrees that a single rotation of the turn motor turns the wheel.
     public static final double DegreesPerTurnRotation = 360/angleGearRatio;
+
     
     /* Motor Inverts */
     public static final boolean angleMotorInvert = chosenModule.angleMotorInvert;
@@ -96,16 +103,17 @@ public class RevSwerveConfig
     /** Radians per Second */
     public static final double maxAngularVelocity = 5.0; //max 10 or.....
    
+
+ 
+ 
+   
+
     public RevSwerveConfig()
     {
-        // Trying to update this:
-        //canCoderConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-        //canCoderConfig.sensorDirection = canCoderInvert;
-        //canCoderConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
-        //canCoderConfig.sensorTimeBase = SensorTimeBase.PerSecond;
-        canCoderConfig = new CANcoderConfiguration().withMagnetSensor(
-                    new MagnetSensorConfigs().withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1)
-                .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive));
+        canCoderConfig = new CANCoderConfiguration();
+        canCoderConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+        canCoderConfig.sensorDirection = canCoderInvert;
+        canCoderConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+        canCoderConfig.sensorTimeBase = SensorTimeBase.PerSecond;
     }
 }
-

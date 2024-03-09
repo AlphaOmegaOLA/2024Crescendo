@@ -69,8 +69,8 @@ public class RobotContainer
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getRawAxis(translationAxis), 
-                () -> -driver.getRawAxis(strafeAxis), 
+                () -> driver.getRawAxis(translationAxis), 
+                () -> driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
                 () -> false,
                 () -> dampen.getAsBoolean(),
@@ -132,7 +132,7 @@ public class RobotContainer
         arm_speaker.onTrue(new InstantCommand(() -> s_Arm.shootSpeaker(), s_Arm));
         arm_amp.onTrue(new InstantCommand(() -> s_Arm.shootAmp(), s_Arm));
         arm_climb.onTrue(new InstantCommand(() -> s_Arm.climb(), s_Arm));
-        /* 
+    
         arm_longshot.onTrue(new InstantCommand(() -> s_Arm.shootLong(), s_Arm));
 
         shootSpeaker.onTrue(
@@ -158,7 +158,6 @@ public class RobotContainer
                         new InstantCommand(() -> s_Intake.stop(), s_Intake)
                     )
                 );
-        */
     }       
         
     /**

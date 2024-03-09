@@ -20,27 +20,8 @@ public class Intake extends SubsystemBase
     // Take a Note in
     public void intake(double speed)
     {
-        intakeMotor.set(speed);
-        /* 
-        // If no note is detected, spin the rollers at full speed in
-        if (!hasNote() && speed > 0)
-        {
-            intakeMotor.set(speed);
-        }
-        else
-        {
-            // Reverse to push a note back out if needed
-            if (speed < 0)
-            {
-                intakeMotor.set(speed);
-            }
-            // Stop if photoeye is hit or joystick value is 0
-            else
-            {
-                stop();
-            }
-        }
-        */
+        intakeMotor.set(speed *.45);
+
     }
 
     // Stop the rollers when called

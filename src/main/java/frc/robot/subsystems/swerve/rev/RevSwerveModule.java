@@ -7,12 +7,11 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.util.swerveUtil.CTREModuleState;
 import frc.lib.util.swerveUtil.RevSwerveModuleConstants;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CANcoderConfigurator;
+
+import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.FaultID;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -29,7 +28,10 @@ public class RevSwerveModule implements SwerveModule
     private CANSparkMax mAngleMotor;
     private CANSparkMax mDriveMotor;
 
-    private CANcoder angleEncoder;
+
+
+
+    private CANCoder angleEncoder;
     private RelativeEncoder relAngleEncoder;
     private RelativeEncoder relDriveEncoder;
 
@@ -52,7 +54,7 @@ public class RevSwerveModule implements SwerveModule
 
          /* Angle Encoder Config */
     
-        angleEncoder = new CANcoder(moduleConstants.cancoderID);
+        angleEncoder = new CANCoder(moduleConstants.cancoderID);
         configEncoders();
 
 
@@ -63,14 +65,9 @@ public class RevSwerveModule implements SwerveModule
     private void configEncoders()
     {     
         // absolute encoder   
-        
-        // Phoenix 6 changes this api. I think below is right - jlawhead 20240207
-        //angleEncoder.configFactoryDefault();
-        //angleEncoder.configAllSettings(new RevSwerveConfig().canCoderConfig);
-        CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
-        CANcoderConfigurator angleConfigurator = angleEncoder.getConfigurator();
-        angleConfigurator.apply(canCoderConfig);
-
+      
+        angleEncoder.configFactoryDefault();
+        angleEncoder.configAllSettings(new RevSwerveConfig().canCoderConfig);
        
         relDriveEncoder = mDriveMotor.getEncoder();
         relDriveEncoder.setPosition(0);
@@ -95,7 +92,7 @@ public class RevSwerveModule implements SwerveModule
     private void configAngleMotor()
     {
         mAngleMotor.restoreFactoryDefaults();
-        SparkPIDController controller = mAngleMotor.getPIDController();
+        SparkMaxPIDController controller = mAngleMotor.getPIDController();
         controller.setP(RevSwerveConfig.angleKP, 0);
         controller.setI(RevSwerveConfig.angleKI,0);
         controller.setD(RevSwerveConfig.angleKD,0);
@@ -113,7 +110,7 @@ public class RevSwerveModule implements SwerveModule
     private void configDriveMotor()
     {        
         mDriveMotor.restoreFactoryDefaults();
-        SparkPIDController controller = mDriveMotor.getPIDController();
+        SparkMaxPIDController controller = mDriveMotor.getPIDController();
         controller.setP(RevSwerveConfig.driveKP,0);
         controller.setI(RevSwerveConfig.driveKI,0);
         controller.setD(RevSwerveConfig.driveKD,0);
@@ -163,7 +160,7 @@ public class RevSwerveModule implements SwerveModule
  
         double velocity = desiredState.speedMetersPerSecond;
         
-        SparkPIDController controller = mDriveMotor.getPIDController();
+        SparkMaxPIDController controller = mDriveMotor.getPIDController();
         controller.setReference(velocity, ControlType.kVelocity, 0);
         
     }
@@ -179,7 +176,7 @@ public class RevSwerveModule implements SwerveModule
         Rotation2d angle = desiredState.angle; 
         //Prevent rotating module if speed is less then 1%. Prevents Jittering.
         
-        SparkPIDController controller = mAngleMotor.getPIDController();
+        SparkMaxPIDController controller = mAngleMotor.getPIDController();
         
         double degReference = angle.getDegrees();
      
@@ -199,7 +196,7 @@ public class RevSwerveModule implements SwerveModule
     public Rotation2d getCanCoder()
     {
         
-        return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition().getValueAsDouble() * 2.0 * Math.PI);
+        return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition());
         //return getAngle();
     }
 
