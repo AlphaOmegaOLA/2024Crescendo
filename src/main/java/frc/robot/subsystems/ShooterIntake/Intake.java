@@ -14,12 +14,14 @@ public class Intake extends SubsystemBase
     public Intake()
     {
         intakeMotor = new Spark(ShooterIntakeConstants.Intake.INTAKE_MOTOR_ID);
-        photoEye = new DigitalInput(ShooterIntakeConstants.Intake.PHOTOEYE_DIO_ID);
+        //photoEye = new DigitalInput(ShooterIntakeConstants.Intake.PHOTOEYE_DIO_ID);
     }
 
     // Take a Note in
     public void intake(double speed)
     {
+        intakeMotor.set(speed);
+        /* 
         // If no note is detected, spin the rollers at full speed in
         if (!hasNote() && speed > 0)
         {
@@ -38,6 +40,7 @@ public class Intake extends SubsystemBase
                 stop();
             }
         }
+        */
     }
 
     // Stop the rollers when called
@@ -50,13 +53,14 @@ public class Intake extends SubsystemBase
     public boolean hasNote()
     {
         // Can invert this with ! if wiring is backwards
-        return photoEye.get();
+        //return photoEye.get();
+        return false;
     }
 
     // Periodically check the status of the intake to see
     // if a note is detected and print the status to the dashboard.
     public void periodic()
     {
-        SmartDashboard.putBoolean("HAS NOTE", hasNote());
+        //SmartDashboard.putBoolean("HAS NOTE", hasNote());
     }
 }

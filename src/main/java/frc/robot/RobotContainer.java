@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -83,6 +84,13 @@ public class RobotContainer
                 s_Intake.intake(operator.getLeftY()), s_Intake
             )
         );
+        
+        s_Shooter.setDefaultCommand(
+        Commands.run(
+            () ->
+                s_Shooter.shootManual(operator.getRightY()), s_Shooter
+            )
+        );
 
         // Configure the button bindings
         configureButtonBindings();
@@ -117,12 +125,14 @@ public class RobotContainer
             new InstantCommand(() -> States.driveState = States.DriveStates.standard)
             );
 
-        /* 
+
         arm_source.onTrue(new InstantCommand(() -> s_Arm.intakeSource(), s_Arm));
         arm_floor.onTrue(new InstantCommand(() -> s_Arm.intakeFloor(), s_Arm));
+
         arm_speaker.onTrue(new InstantCommand(() -> s_Arm.shootSpeaker(), s_Arm));
         arm_amp.onTrue(new InstantCommand(() -> s_Arm.shootAmp(), s_Arm));
         arm_climb.onTrue(new InstantCommand(() -> s_Arm.climb(), s_Arm));
+        /* 
         arm_longshot.onTrue(new InstantCommand(() -> s_Arm.shootLong(), s_Arm));
 
         shootSpeaker.onTrue(
@@ -148,7 +158,7 @@ public class RobotContainer
                         new InstantCommand(() -> s_Intake.stop(), s_Intake)
                     )
                 );
-        */ 
+        */
     }       
         
     /**

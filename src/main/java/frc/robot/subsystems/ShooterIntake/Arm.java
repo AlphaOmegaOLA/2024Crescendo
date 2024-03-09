@@ -10,6 +10,8 @@ import frc.robot.constants.ShooterIntakeConstants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.RelativeEncoder;
+
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -17,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Arm extends SubsystemBase 
 {
-    private DigitalInput photoEye = new DigitalInput(ShooterIntakeConstants.Arm.PHOTOEYE_DIO_ID);
+    //private DigitalInput photoEye = new DigitalInput(ShooterIntakeConstants.Arm.PHOTOEYE_DIO_ID);
     private CANSparkMax leftArmMotor;
     private CANSparkMax rightArmMotor;
     private RevThroughBoreEncoder armEncoder;
@@ -33,12 +35,17 @@ public class Arm extends SubsystemBase
     private final TrapezoidProfile.Constraints constraints;
     private final ProfiledPIDController controller;
     private final ElevatorFeedforward feedForward;
+    private double voltage;
+    private RelativeEncoder leftEncoder;
+    private double currentAngle;
+    private double progress;
+    private double rotations;
 
     public Arm()
     {
         leftArmMotor = new CANSparkMax(ShooterIntakeConstants.Arm.LEFT_ARM_MOTOR_ID, MotorType.kBrushless);
         leftArmMotor.setIdleMode(IdleMode.kBrake);
-        //leftArmMotor.setInverted(true);
+        leftArmMotor.setInverted(true);
         rightArmMotor = new CANSparkMax(ShooterIntakeConstants.Arm.RIGHT_ARM_MOTOR_ID, MotorType.kBrushless);
         rightArmMotor.setIdleMode(IdleMode.kBrake);
         //rightArmMotor.setInverted(true);
@@ -57,26 +64,48 @@ public class Arm extends SubsystemBase
         constraints =  new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration);
         controller = new ProfiledPIDController(proportional, integral, differential, constraints, updateOutput);
         feedForward = new ElevatorFeedforward(staticFriction, gravityGain, velocityGain);
+        leftEncoder = leftArmMotor.getEncoder();
     }
 
     private void setAngle(double angle)
     {
-        controller.setGoal(angle); // double Degrees
-
-        if (!tooFar())
+        SmartDashboard.putNumber("Goal", angle);
+        leftEncoder.setPosition(0);
+        if (angle > ShooterIntakeConstants.Arm.ARM_AMP_ANGLE)
         {
-            leftArmMotor.setVoltage(
-                controller.calculate(armEncoder.getAngle().getDegrees())
-                    + feedForward.calculate(controller.getSetpoint().velocity));
-
-            rightArmMotor.setVoltage(
-                controller.calculate(armEncoder.getAngle().getDegrees())
-                    + feedForward.calculate(controller.getSetpoint().velocity));
+            progress = angle / ShooterIntakeConstants.Arm.ARM_FLOOR_ANGLE;
+            rotations = 160 * progress;
+            leftEncoder.setPosition(0);
+            while (armEncoder.getAngle().getDegrees() < angle && leftEncoder.getPosition() <= rotations)
+            {
+                leftArmMotor.set(.2);
+                rightArmMotor.set(.2);
+                SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
+            }
+            leftEncoder.setPosition(0);
+            leftArmMotor.set(0);
+            rightArmMotor.set(0);
+        }
+        if (angle < ShooterIntakeConstants.Arm.ARM_FLOOR_ANGLE)
+        {
+            progress = angle / ShooterIntakeConstants.Arm.ARM_AMP_ANGLE;
+            rotations = -160 * progress;
+            leftEncoder.setPosition(0);
+            while (armEncoder.getAngle().getDegrees() > angle  && leftEncoder.getPosition() >= -160)
+            {
+                leftArmMotor.set(-.2);
+                rightArmMotor.set(-.2);
+                SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
+            }
+            leftArmMotor.set(0);
+            rightArmMotor.set(0);            
+            leftEncoder.setPosition(0);
         }
         else
         {
-            leftArmMotor.setVoltage(0);
-            rightArmMotor.setVoltage(0);
+            leftArmMotor.set(0);
+            rightArmMotor.set(0);
+            leftEncoder.setPosition(0);
         }
     }
 
@@ -113,13 +142,16 @@ public class Arm extends SubsystemBase
     public boolean tooFar()
     {
         // Can invert this with ! if wiring is backwards
-        return photoEye.get();
+        //return photoEye.get();
+        return false;
     }
 
     public void periodic()
     {
         SmartDashboard.putNumber("ARM ANGLE", armEncoder.getAngle().getDegrees());
         SmartDashboard.putNumber("ARM OFFSET", armEncoder.getOffset().getDegrees());
+        SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
+        SmartDashboard.putNumber("CPR", leftEncoder.getCountsPerRevolution());
     }
 }
 
