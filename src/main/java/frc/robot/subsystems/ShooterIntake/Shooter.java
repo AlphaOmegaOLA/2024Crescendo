@@ -20,14 +20,14 @@ public class Shooter extends SubsystemBase
 
     public void shootAmp()
     {
-        leftShooterMotor.set(ShooterIntakeConstants.Shooter.HALF_SPEED);
-        rightShooterMotor.set(ShooterIntakeConstants.Shooter.HALF_SPEED);
+        leftShooterMotor.set(-ShooterIntakeConstants.Shooter.HALF_SPEED);
+        rightShooterMotor.set(-ShooterIntakeConstants.Shooter.HALF_SPEED);
     }
 
     public void shootSpeaker()
     {
-        leftShooterMotor.set(ShooterIntakeConstants.Shooter.FULL_SPEED);
-        rightShooterMotor.set(ShooterIntakeConstants.Shooter.FULL_SPEED);
+        leftShooterMotor.set(-ShooterIntakeConstants.Shooter.FULL_SPEED);
+        rightShooterMotor.set(-ShooterIntakeConstants.Shooter.FULL_SPEED);
     }
 
     public void shootManual(double speed)

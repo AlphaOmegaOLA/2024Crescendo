@@ -62,7 +62,7 @@ public final class ShooterIntakeConstants
     {
         public static final int LEFT_SHOOTER_MOTOR_ID = 10;
         public static final int RIGHT_SHOOTER_MOTOR_ID = 9;
-        public static final double FULL_SPEED = FULL;
+        public static final double FULL_SPEED = FULL * .70;
         public static final double HALF_SPEED = HALF;
         public static final double QUARTER_SPEED = QUARTER;
     }

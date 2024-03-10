@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Intake extends SubsystemBase
 {
     private Spark intakeMotor;
-    private DigitalInput photoEye;
 
     public Intake()
     {
@@ -20,8 +19,7 @@ public class Intake extends SubsystemBase
     // Take a Note in
     public void intake(double speed)
     {
-        intakeMotor.set(speed *.45);
-
+        intakeMotor.set(speed * .45);
     }
 
     // Stop the rollers when called
