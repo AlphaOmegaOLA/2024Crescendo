@@ -22,6 +22,16 @@ public class Intake extends SubsystemBase
         intakeMotor.set(speed * .45);
     }
 
+    public void shootAmp()
+    {
+        intakeMotor.set(ShooterIntakeConstants.Intake.HALF_SPEED);
+    }
+
+    public void shootSpeaker()
+    {
+        intakeMotor.set(ShooterIntakeConstants.Intake.FULL_SPEED);
+    }
+
     // Stop the rollers when called
     public void stop()
     {

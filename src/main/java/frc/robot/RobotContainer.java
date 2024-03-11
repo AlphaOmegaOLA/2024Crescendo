@@ -148,7 +148,7 @@ public class RobotContainer
                 new SequentialCommandGroup(
                     new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
                     new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.intake(1.0), s_Intake),
+                    new InstantCommand(() -> s_Intake.shootSpeaker(), s_Intake),
                     new WaitCommand(3)
                 )).onFalse(
                     new SequentialCommandGroup(
@@ -160,7 +160,7 @@ public class RobotContainer
         shootAmp.whileTrue(
                 new SequentialCommandGroup(
                     new InstantCommand(() -> s_Shooter.shootAmp(), s_Shooter),
-                    new InstantCommand(() -> s_Intake.intake(1.0), s_Intake),
+                    new InstantCommand(() -> s_Intake.shootAmp(), s_Intake),
                     new WaitCommand(3)
                 )).onFalse(
                     new SequentialCommandGroup(

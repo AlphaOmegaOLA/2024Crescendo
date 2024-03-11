@@ -14,8 +14,10 @@ public class Shooter extends SubsystemBase
     public Shooter()
     {
         leftShooterMotor = new CANSparkMax(ShooterIntakeConstants.Shooter.LEFT_SHOOTER_MOTOR_ID, MotorType.kBrushless);
-        rightShooterMotor = new CANSparkMax(ShooterIntakeConstants.Shooter.RIGHT_SHOOTER_MOTOR_ID, MotorType.kBrushless);
+        leftShooterMotor.setOpenLoopRampRate(.5);
         leftShooterMotor.setInverted(true);
+        rightShooterMotor = new CANSparkMax(ShooterIntakeConstants.Shooter.RIGHT_SHOOTER_MOTOR_ID, MotorType.kBrushless);
+        rightShooterMotor.setOpenLoopRampRate(.5);
     }
 
     public void shootAmp()
@@ -32,8 +34,8 @@ public class Shooter extends SubsystemBase
 
     public void shootManual(double speed)
     {
-        leftShooterMotor.set(speed);
-        rightShooterMotor.set(speed);        
+        leftShooterMotor.set(speed * .5);
+        rightShooterMotor.set(speed * .5);        
     }
 
     public void stop()

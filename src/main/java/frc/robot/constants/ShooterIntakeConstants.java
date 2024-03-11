@@ -62,8 +62,8 @@ public final class ShooterIntakeConstants
     {
         public static final int LEFT_SHOOTER_MOTOR_ID = 10;
         public static final int RIGHT_SHOOTER_MOTOR_ID = 9;
-        public static final double FULL_SPEED = FULL * .70;
-        public static final double HALF_SPEED = HALF;
+        public static final double FULL_SPEED = FULL * .7;
+        public static final double HALF_SPEED = HALF * .3;
         public static final double QUARTER_SPEED = QUARTER;
     }
 
@@ -73,7 +73,7 @@ public final class ShooterIntakeConstants
         public static final int INTAKE_MOTOR_ID = 0;
         public static final int PHOTOEYE_DIO_ID = 2;
         public static final double FULL_SPEED = .5;
-        public static final double HALF_SPEED = .25;
-        public static final double QUARTER_SPEED = .1;
+        public static final double HALF_SPEED = .4;
+        public static final double QUARTER_SPEED = .07;
     }
 }
