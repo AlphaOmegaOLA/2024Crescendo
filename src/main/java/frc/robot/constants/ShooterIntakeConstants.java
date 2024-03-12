@@ -34,10 +34,10 @@ public final class ShooterIntakeConstants
         public static final double ARM_AMP_ANGLE = 1.3;
         public static final double ARM_LONGSHOT_ANGLE = 0.0;
         public static final double ARM_SPEAKER_ANGLE = 80.1;
-        public static final double ARM_CLIMB_ANGLE = 60.0;
+        public static final double ARM_CLIMB_ANGLE = 70.0;
 
         // ARM PID 
-        public static final int ARM_CURRENT_LIMIT = 40;
+        public static final int ARM_CURRENT_LIMIT = 50;
         public static final double ARM_UPDATE_OUTPUT = .02;
         public static final double ARM_MAX_VELOCITY = 1.75;
         public static final double ARM_MAX_ACCELERATION = .75;
