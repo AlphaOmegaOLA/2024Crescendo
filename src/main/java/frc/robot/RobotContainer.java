@@ -14,13 +14,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import frc.robot.commands.*;
 import frc.robot.subsystems.Articulation.PoseEstimator;
 import frc.robot.subsystems.ShooterIntake.Arm;
 import frc.robot.subsystems.ShooterIntake.Intake;
 import frc.robot.subsystems.ShooterIntake.Shooter;
 import frc.robot.subsystems.swerve.rev.RevSwerve;
 import frc.robot.constants.ControllerMap;
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.commands.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -68,6 +69,23 @@ public class RobotContainer
     private final PoseEstimator s_PoseEstimator = new PoseEstimator();
 
     private final UsbCamera usbcamera;
+
+    private final SequentialCommandGroup shootnroll = 
+        new SequentialCommandGroup(
+                    new InstantCommand(() -> s_Arm.shootSpeaker(), s_Arm),
+                    new WaitCommand(2),
+                    new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Intake.shootSpeaker(), s_Intake),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Shooter.stop()),
+                    new InstantCommand(() -> s_Intake.stop()),
+                    new InstantCommand(() -> s_Arm.intakeSource(), s_Arm),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.3, 0), 0, true, false), s_Swerve),
+                    //new MoveBackwardsCommand(s_Swerve, 11)
+                    new WaitCommand(8)
+                    );
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -177,6 +195,6 @@ public class RobotContainer
      */
     public Command getAutonomousCommand() 
     {
-        return null;
+        return shootnroll;
     }
 }

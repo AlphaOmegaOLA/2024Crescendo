@@ -30,7 +30,7 @@ public final class ShooterIntakeConstants
         // Rev Through Bore Encoder and set it here:
         public static final Rotation2d ARM_ENCODER_OFFSET = Rotation2d.fromDegrees(350+97);
         public static final double ARM_FLOOR_ANGLE = 90.0;
-        public static final double ARM_SOURCE_ANGLE = 11.0;
+        public static final double ARM_SOURCE_ANGLE = 30.1;
         public static final double ARM_AMP_ANGLE = 1.3;
         public static final double ARM_LONGSHOT_ANGLE = 0.0;
         public static final double ARM_SPEAKER_ANGLE = 80.1;
