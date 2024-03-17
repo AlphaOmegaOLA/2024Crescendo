@@ -7,16 +7,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import frc.robot.subsystems.Articulation.PoseEstimator;
 import frc.robot.subsystems.ShooterIntake.Arm;
 import frc.robot.subsystems.ShooterIntake.Intake;
+import frc.robot.subsystems.ShooterIntake.PIDArm;
 import frc.robot.subsystems.ShooterIntake.Shooter;
 import frc.robot.subsystems.swerve.rev.RevSwerve;
 import frc.robot.constants.ControllerMap;
@@ -31,6 +33,9 @@ import frc.robot.commands.*;
  */
 public class RobotContainer 
 {
+    /* Autonomous menu */
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
     /* Controllers */
     private final XboxController driver = new XboxController(0);
     private final XboxController operator = new XboxController(1);
@@ -39,8 +44,6 @@ public class RobotContainer
     private final int translationAxis = 1;
     private final int strafeAxis = 0;
     private final int rotationAxis = 4;
-    //private final int speedDial = 5;
-
     
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, ControllerMap.LOGO_RIGHT);
@@ -56,23 +59,28 @@ public class RobotContainer
     private final JoystickButton arm_speaker = new JoystickButton(operator, XboxController.Button.kY.value);
     private final JoystickButton arm_amp = new JoystickButton(operator, XboxController.Button.kA.value);
     private final JoystickButton shootAmp = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
-    //private final JoystickButton arm_longshot = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
-    //private final JoystickButton shootSpeaker = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
     private final JoystickButton shootSpeaker = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
-    //private final JoystickButton shootAmp = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
-
+  
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
-    private final Arm s_Arm = new Arm();
+    //private final Arm s_Arm = new Arm();
+    private final PIDArm s_Arm = new PIDArm();
     private final Intake s_Intake = new Intake();
     private final Shooter s_Shooter = new Shooter();
-    private final PoseEstimator s_PoseEstimator = new PoseEstimator();
 
     private final UsbCamera usbcamera;
 
-    private final SequentialCommandGroup shootnroll = 
+
+
+    /* Autonomous Commands */
+
+    // Distance in meters: Feet to meters is feet * 0.3048;
+    // Duration in seconds
+    // speed is meters per second for the drive command: duration / distance
+
+    private final SequentialCommandGroup leftSide = 
         new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Arm.shootSpeaker(), s_Arm),
+                   new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
                     new WaitCommand(2),
                     new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
                     new WaitCommand(1),
@@ -80,11 +88,59 @@ public class RobotContainer
                     new WaitCommand(1),
                     new InstantCommand(() -> s_Shooter.stop()),
                     new InstantCommand(() -> s_Intake.stop()),
-                    new InstantCommand(() -> s_Arm.intakeSource(), s_Arm),
-                    new WaitCommand(1),
+                   new InstantCommand(() -> States.armState = States.ArmStates.Source),
+                    new WaitCommand(1),                   
                     new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.3, 0), 0, true, false), s_Swerve),
-                    //new MoveBackwardsCommand(s_Swerve, 11)
                     new WaitCommand(8)
+                    );
+
+    private final SequentialCommandGroup straightBack = 
+        new SequentialCommandGroup(
+                   new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
+                    new WaitCommand(2),
+                    new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Intake.shootSpeaker(), s_Intake),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Shooter.stop()),
+                    new InstantCommand(() -> s_Intake.stop()),
+                    new InstantCommand(() -> States.armState = States.ArmStates.Source),
+                    new WaitCommand(1),                   
+                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
+                    new WaitCommand(4)
+                    );
+
+    public final SequentialCommandGroup rightSide = 
+        new SequentialCommandGroup(
+                     new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
+                    new WaitCommand(2),
+                    new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Intake.shootSpeaker(), s_Intake),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Shooter.stop()),
+                    new InstantCommand(() -> s_Intake.stop()),
+                    new InstantCommand(() -> States.armState = States.ArmStates.Source),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
+                    new WaitCommand(2),
+                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(1, 1), s_Swerve.getPose().getRotation().getDegrees() * -1, true, false), s_Swerve),
+                    new WaitCommand(3),
+                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
+                    new WaitCommand(5)
+                    );
+
+    public final SequentialCommandGroup shootStop = 
+        new SequentialCommandGroup(
+                     new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
+                    new WaitCommand(2),
+                    new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Intake.shootSpeaker(), s_Intake),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Shooter.stop()),
+                    new InstantCommand(() -> s_Intake.stop()),
+                    new InstantCommand(() -> States.armState = States.ArmStates.Source)
                     );
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -116,11 +172,23 @@ public class RobotContainer
             )
         );
 
+        s_Arm.setDefaultCommand(
+            new PIDArmCommand(
+                s_Arm        
+            )
+        );
+
         // Camera
         usbcamera = CameraServer.startAutomaticCapture();
 
         // Configure the button bindings
         configureButtonBindings();
+
+        autoChooser.setDefaultOption("Swervy D on the LEFT", leftSide);
+        autoChooser.addOption("Swervy D in the CENTER", straightBack);
+        autoChooser.addOption("Swervy D on the RIGHT", rightSide);
+        autoChooser.addOption("Swervy D SHOOTS ONLY", shootStop);
+        SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
     /**
@@ -152,15 +220,15 @@ public class RobotContainer
             new InstantCommand(() -> States.driveState = States.DriveStates.standard)
             );
 
+        //arm_source.onTrue(c_intakeSource);
+        //arm_floor.onTrue(c_intakeFloor);
+        //arm_speaker.onTrue(c_ShootSpeaker);
+        //arm_amp.onTrue(c_ShootAmp);
 
-        arm_source.onTrue(new InstantCommand(() -> s_Arm.intakeSource(), s_Arm));
-        arm_floor.onTrue(new InstantCommand(() -> s_Arm.intakeFloor(), s_Arm));
-
-        arm_speaker.onTrue(new InstantCommand(() -> s_Arm.shootSpeaker(), s_Arm));
-        arm_amp.onTrue(new InstantCommand(() -> s_Arm.shootAmp(), s_Arm));
-        //arm_climb.onTrue(new InstantCommand(() -> s_Arm.climb(), s_Arm));
-    
-        //arm_longshot.onTrue(new InstantCommand(() -> s_Arm.shootLong(), s_Arm));
+        arm_source.onTrue(new InstantCommand(() -> States.armState = States.ArmStates.Source));
+        arm_floor.onTrue(new InstantCommand(() -> States.armState = States.ArmStates.Floor));
+        arm_speaker.onTrue(new InstantCommand(() -> States.armState = States.ArmStates.Speaker));
+        arm_amp.onTrue(new InstantCommand(() -> States.armState = States.ArmStates.Amp));
 
         shootSpeaker.onTrue(
                 new SequentialCommandGroup(
@@ -195,6 +263,9 @@ public class RobotContainer
      */
     public Command getAutonomousCommand() 
     {
-        return shootnroll;
+
+        //return rightSide;
+        return autoChooser.getSelected();
+        
     }
 }

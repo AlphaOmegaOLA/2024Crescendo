@@ -40,6 +40,7 @@ public class Arm extends SubsystemBase
     private double currentAngle;
     private double progress;
     private double rotations;
+    private boolean goalReached;
 
     public Arm()
     {
@@ -65,47 +66,104 @@ public class Arm extends SubsystemBase
         controller = new ProfiledPIDController(proportional, integral, differential, constraints, updateOutput);
         feedForward = new ElevatorFeedforward(staticFriction, gravityGain, velocityGain);
         leftEncoder = leftArmMotor.getEncoder();
+        goalReached = false;
+    }
+
+    public void setSpeaker()
+    {
+        while (armEncoder.getAngle().getDegrees() < ShooterIntakeConstants.Arm.ARM_SPEAKER_ANGLE)
+        {
+            goalReached = false;   
+            leftArmMotor.set(.5);
+            rightArmMotor.set(.5);
+        }
+        leftEncoder.setPosition(0);
+        leftArmMotor.set(0);
+        rightArmMotor.set(0);
+        goalReached = true;
+    }
+
+    public void setSource()
+    {
+        while (armEncoder.getAngle().getDegrees() > ShooterIntakeConstants.Arm.ARM_SOURCE_ANGLE)
+        {
+            goalReached = false;
+            leftArmMotor.set(-.5);
+            rightArmMotor.set(-.5);
+        }
+        leftEncoder.setPosition(0);
+        leftArmMotor.set(0);
+        rightArmMotor.set(0);
+        goalReached = true;
     }
 
     private void setAngle(double angle)
     {
-        SmartDashboard.putNumber("Goal", angle);
+        //SmartDashboard.putNumber("Goal", angle);
         leftEncoder.setPosition(0);
+        System.out.println("IN SET ANGLE");
+        System.out.println("GOAL:" + angle);
+        System.out.println("AMP ANGLE:" + ShooterIntakeConstants.Arm.ARM_AMP_ANGLE);
+        System.out.println("FLOOR ANGLE:" + ShooterIntakeConstants.Arm.ARM_FLOOR_ANGLE);
+        goalReached = false;
+        // Arm is currently less than the desired angle
         if (angle > ShooterIntakeConstants.Arm.ARM_AMP_ANGLE)
         {
+            System.out.println(angle + " is > " + ShooterIntakeConstants.Arm.ARM_AMP_ANGLE);
+            System.out.println("LOWERING ARM");
             progress = angle / ShooterIntakeConstants.Arm.ARM_FLOOR_ANGLE;
             rotations = 161 * progress;
             leftEncoder.setPosition(0);
-            while (armEncoder.getAngle().getDegrees() < angle && leftEncoder.getPosition() <= rotations)
+            if (armEncoder.getAngle().getDegrees() < angle && leftEncoder.getPosition() <= rotations)
             {
-                leftArmMotor.set(.5);
-                rightArmMotor.set(.5);
-                SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
+                goalReached = false;
+                System.out.println("IN LOWER MODE");
+                leftArmMotor.set(ShooterIntakeConstants.Arm.HALF_SPEED);
+                rightArmMotor.set(ShooterIntakeConstants.Arm.HALF_SPEED);
+                //SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
             }
-            leftEncoder.setPosition(0);
-            leftArmMotor.set(0);
-            rightArmMotor.set(0);
+            else
+            {
+                System.out.println("STOPPED LOWERING");
+                leftEncoder.setPosition(0);
+                leftArmMotor.set(0);
+                rightArmMotor.set(0);
+                goalReached = true;
+            }
         }
-        if (angle < ShooterIntakeConstants.Arm.ARM_FLOOR_ANGLE)
+        // Arm is currently greater than the desired angle
+        else if (angle < ShooterIntakeConstants.Arm.ARM_FLOOR_ANGLE)
         {
+            System.out.println(angle + " is < " + ShooterIntakeConstants.Arm.ARM_FLOOR_ANGLE);
+            System.out.println("RAISING ARM");
+            goalReached = false;
             progress = angle / ShooterIntakeConstants.Arm.ARM_AMP_ANGLE;
             rotations = -161 * progress;
             leftEncoder.setPosition(0);
-            while (armEncoder.getAngle().getDegrees() > angle  && leftEncoder.getPosition() >= -160)
+            if (armEncoder.getAngle().getDegrees() > angle && leftEncoder.getPosition() >= rotations)
             {
-                leftArmMotor.set(-.5);
-                rightArmMotor.set(-.5);
-                SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
+                System.out.println("IN RAISE MODE");
+                goalReached = false;
+                leftArmMotor.set(-ShooterIntakeConstants.Arm.HALF_SPEED);
+                rightArmMotor.set(-ShooterIntakeConstants.Arm.HALF_SPEED);
+                //SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
             }
-            leftArmMotor.set(0);
-            rightArmMotor.set(0);            
-            leftEncoder.setPosition(0);
+            else
+            {
+                System.out.println("STOPPED RAISING");
+                leftArmMotor.set(0);
+                rightArmMotor.set(0);            
+                leftEncoder.setPosition(0);
+                goalReached = true;
+            }
         }
         else
         {
+            System.out.println("NO MORE ARM ACTIONS");
             leftArmMotor.set(0);
             rightArmMotor.set(0);
             leftEncoder.setPosition(0);
+            goalReached = true;
         }
     }
 
@@ -146,12 +204,34 @@ public class Arm extends SubsystemBase
         return false;
     }
 
+    public double getAngle()
+    {
+        return armEncoder.getAngle().getDegrees();
+    }
+
+    public boolean reachedGoal()
+    {
+        return goalReached;
+    }
+
+    public void stopMotors()
+    {
+        leftArmMotor.set(0.0);
+        rightArmMotor.set(0.0);
+    }
+
+    public void resetEncoders()
+    {
+        //These are used as a backup to the Rev Through bore encoder
+        leftEncoder.setPosition(0.0);
+    }
+
     public void periodic()
     {
         SmartDashboard.putNumber("ARM ANGLE", armEncoder.getAngle().getDegrees());
-        SmartDashboard.putNumber("ARM OFFSET", armEncoder.getOffset().getDegrees());
-        SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
-        SmartDashboard.putNumber("CPR", leftEncoder.getCountsPerRevolution());
+        //SmartDashboard.putNumber("ARM OFFSET", armEncoder.getOffset().getDegrees());
+        //SmartDashboard.putNumber("LEFT ENCODER", leftEncoder.getPosition());
+        //SmartDashboard.putNumber("CPR", leftEncoder.getCountsPerRevolution());
     }
 }
 

@@ -200,5 +200,13 @@ public class RevSwerve extends SubsystemBase {
             SmartDashboard.putNumber("REV Mod " + mod.getModuleNumber() + " Velocity", mod.getState().speedMetersPerSecond);    
         }
         */
+
+        Pose2d currentPose = getPose();
+
+        // Assuming you're starting from (0, 0), but you could adjust this based on initial pose if necessary
+        double distanceTraveled = Math.sqrt(Math.pow(currentPose.getX(), 2) + Math.pow(currentPose.getY(), 2));
+    
+        // Display the distance traveled on SmartDashboard
+        SmartDashboard.putNumber("Distance Traveled (m)", distanceTraveled);
     }
 }

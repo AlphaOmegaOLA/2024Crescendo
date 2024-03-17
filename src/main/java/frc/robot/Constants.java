@@ -30,7 +30,7 @@ public final class Constants
         public static final int revLimit = 0;
 
         //Arm PID Constants
-        public static final double armP = 0.0;
+        public static final double armP = 0.035;
         public static final double armI = 0.0;
         public static final double armD = 0.0;
         public static final double armK = 0.0;
