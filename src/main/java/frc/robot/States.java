@@ -15,6 +15,4 @@ public class States
     }
     public static DriveStates driveState = DriveStates.standard;
     public static ArmStates armState = ArmStates.standard;
-
-
 }

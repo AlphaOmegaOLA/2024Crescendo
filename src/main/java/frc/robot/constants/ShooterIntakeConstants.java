@@ -41,20 +41,12 @@ public final class ShooterIntakeConstants
         public static final double ARM_UPDATE_OUTPUT = .02;
         public static final double ARM_MAX_VELOCITY = 1.75;
         public static final double ARM_MAX_ACCELERATION = .75;
-        // public static final double ARM_P = 1.3;
-        // public static final double ARM_I = 0.0;
-        // public static final double ARM_D = 0.7;
-        // public static final double ARM_S = 1.1;
-        // public static final double ARM_G = 1.2;
-        // public static final double ARM_V = 1.3;
         public static final double ARM_P = .2;
         public static final double ARM_I = 0.0;
         public static final double ARM_D = 0.7;
         public static final double ARM_S = 1.1;
         public static final double ARM_G = 1.2;
         public static final double ARM_V = 1.3;
-
-
     }
 
     /* SHOOTER PORTION OF SHOOTERINTAKE SUBSYSTEM */

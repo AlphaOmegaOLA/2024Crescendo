@@ -6,8 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -15,8 +13,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import frc.robot.subsystems.Articulation.PoseEstimator;
-import frc.robot.subsystems.ShooterIntake.Arm;
 import frc.robot.subsystems.ShooterIntake.Intake;
 import frc.robot.subsystems.ShooterIntake.PIDArm;
 import frc.robot.subsystems.ShooterIntake.Shooter;
@@ -219,11 +215,6 @@ public class RobotContainer
             new InstantCommand(() -> States.driveState = States.DriveStates.d270)).onFalse(
             new InstantCommand(() -> States.driveState = States.DriveStates.standard)
             );
-
-        //arm_source.onTrue(c_intakeSource);
-        //arm_floor.onTrue(c_intakeFloor);
-        //arm_speaker.onTrue(c_ShootSpeaker);
-        //arm_amp.onTrue(c_ShootAmp);
 
         arm_source.onTrue(new InstantCommand(() -> States.armState = States.ArmStates.Source));
         arm_floor.onTrue(new InstantCommand(() -> States.armState = States.ArmStates.Floor));
