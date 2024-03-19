@@ -21,6 +21,14 @@ import frc.robot.constants.ControllerMap;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.commands.*;
 
+/* PathPlanner */
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -30,7 +38,9 @@ import frc.robot.commands.*;
 public class RobotContainer 
 {
     /* Autonomous menu */
-    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    //private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    private final SendableChooser<Command> autoChooser;
+
 
     /* Controllers */
     private final XboxController driver = new XboxController(0);
@@ -139,9 +149,25 @@ public class RobotContainer
                     new InstantCommand(() -> States.armState = States.ArmStates.Source)
                     );
 
+    public final SequentialCommandGroup intakeFloor = 
+        new SequentialCommandGroup(
+                    new InstantCommand(() -> States.armState = States.ArmStates.Floor),
+                    new InstantCommand(() -> s_Intake.shootAmp(), s_Intake),
+                    new WaitCommand(3),
+                    new InstantCommand(() -> s_Intake.stop()),
+                    new InstantCommand(() -> States.armState = States.ArmStates.Source)
+                    );
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
+
+        NamedCommands.registerCommand("Intake Floor", intakeFloor);
+        autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+        SmartDashboard.putData("Auto Mode", autoChooser);
+
+        
+        
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
