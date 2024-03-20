@@ -4,7 +4,212 @@
   "command": {
     "type": "sequential",
     "data": {
-      "commands": []
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Speaker Angle"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Fast"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Floor Angle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Fast"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1 Get Amp Note"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Speaker Angle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Amp Note to Ctr"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Fast"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Floor Angle"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Fast"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3 Ctr to Mid Note"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 Mid Note to Ctr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Speaker Angle"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Fast"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Floor Angle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Fast"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5 Ctr to Src Note"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Speaker Angle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6 Src Note to Ctr"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Fast"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Floor Angle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Fast"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        }
+      ]
     }
   },
   "folder": null,

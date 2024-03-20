@@ -123,28 +123,28 @@ public class RobotContainer
                     c_intakeStop
                     );  
 
-    private final SequentialCommandGroup c_shootSpeaker = 
+    private final SequentialCommandGroup c_shootSpeakerOnlyAuto = 
         new SequentialCommandGroup(c_speakerAngle, new WaitCommand(1), c_shootFast);          
 
-    private final SequentialCommandGroup c_sourceSide = 
+    private final SequentialCommandGroup c_sourceSideAuto = 
         new SequentialCommandGroup(
-                    c_shootSpeaker,
+                    c_shootSpeakerOnlyAuto,
                     c_sourceAngle,              
                     new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.3, 0), 0, true, false), s_Swerve),
                     new WaitCommand(8)
                     );
 
-    private final SequentialCommandGroup c_straightBack = 
+    private final SequentialCommandGroup c_straightBackAuto = 
         new SequentialCommandGroup(
-                    c_shootSpeaker,
+                    c_shootSpeakerOnlyAuto,
                     c_sourceAngle,               
                     new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
                     new WaitCommand(4)
                     );
 
-    public final SequentialCommandGroup c_ampSide = 
+    public final SequentialCommandGroup c_ampSideAuto = 
         new SequentialCommandGroup(
-                    c_shootSpeaker,
+                    c_shootSpeakerOnlyAuto,
                     c_sourceAngle,
                     new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
                     new WaitCommand(2),
@@ -157,11 +157,19 @@ public class RobotContainer
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
-        NamedCommands.registerCommand("Intake Floor", c_intakeSlow);
+        // PathPlanner registered commands
+        NamedCommands.registerCommand("Arm Amp Angle", c_ampAngle);
+        NamedCommands.registerCommand("Arm Floor Angle", c_floorAngle);
+        NamedCommands.registerCommand("Arm Source Angle", c_sourceAngle);
+        NamedCommands.registerCommand("Arm Speaker Angle", c_speakerAngle);
+        NamedCommands.registerCommand("Intake Fast", c_intakeFast);
+        NamedCommands.registerCommand("Intake Slow", c_intakeSlow);
+        NamedCommands.registerCommand("Intake Stop", c_intakeStop);
+        NamedCommands.registerCommand("Shoot Fast", c_shootFast);
+        NamedCommands.registerCommand("Shoot Slow", c_shootSlow);
+        NamedCommands.registerCommand("Shoot Stop", c_shootStop);
         autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         SmartDashboard.putData("Auto Mode", autoChooser);
-
-        
         
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -201,10 +209,10 @@ public class RobotContainer
         // Configure the button bindings
         configureButtonBindings();
 
-        autoChooser.setDefaultOption("Swervy D on the LEFT", c_sourceSide);
-        autoChooser.addOption("Swervy D in the CENTER", c_straightBack);
-        autoChooser.addOption("Swervy D on the RIGHT", c_ampSide);
-        autoChooser.addOption("Swervy D SHOOTS ONLY", c_shootSpeaker);
+        autoChooser.setDefaultOption("Swervy D on the LEFT", c_sourceSideAuto);
+        autoChooser.addOption("Swervy D in the CENTER", c_straightBackAuto);
+        autoChooser.addOption("Swervy D on the RIGHT", c_ampSideAuto);
+        autoChooser.addOption("Swervy D SHOOTS ONLY", c_shootSpeakerOnlyAuto);
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
