@@ -41,7 +41,6 @@ public class RobotContainer
     //private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private final SendableChooser<Command> autoChooser;
 
-
     /* Controllers */
     private final XboxController driver = new XboxController(0);
     private final XboxController operator = new XboxController(1);
