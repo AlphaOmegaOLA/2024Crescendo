@@ -78,56 +78,74 @@ public class RobotContainer
 
 
 
-    /* Autonomous Commands */
+    /* Commands */
 
     // Distance in meters: Feet to meters is feet * 0.3048;
     // Duration in seconds
     // speed is meters per second for the drive command: duration / distance
 
-    private final SequentialCommandGroup leftSide = 
+    private final InstantCommand c_floorAngle = new InstantCommand(() -> States.armState = States.ArmStates.Floor);
+    private final InstantCommand c_speakerAngle = new InstantCommand(() -> States.armState = States.ArmStates.Speaker);
+    private final InstantCommand c_sourceAngle = new InstantCommand(() -> States.armState = States.ArmStates.Source);
+    private final InstantCommand c_ampAngle = new InstantCommand(() -> States.armState = States.ArmStates.Amp);
+
+    private final SequentialCommandGroup c_intakeStop = 
+        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.stop(), s_Intake));   
+
+    private final SequentialCommandGroup c_intakeFast = 
+        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.fast(), s_Intake));   
+
+    private final SequentialCommandGroup c_intakeSlow = 
+        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.slow(), s_Intake));             
+
+    private final SequentialCommandGroup c_shootStop = 
         new SequentialCommandGroup(
-                   new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
+                new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
+                new InstantCommand(() -> s_Intake.stop(), s_Intake)
+                );  
+
+    private final SequentialCommandGroup c_shootFast = 
+        new SequentialCommandGroup(
+                    new InstantCommand(() -> s_Shooter.fast(), s_Shooter),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Intake.fast(), s_Intake),
+                    new WaitCommand(1),
+                    c_shootStop,
+                    c_intakeStop
+                    );
+
+    private final SequentialCommandGroup c_shootSlow = 
+        new SequentialCommandGroup(
+                    new InstantCommand(() -> s_Shooter.slow(), s_Shooter),
+                    new InstantCommand(() -> s_Intake.slow(), s_Intake),
                     new WaitCommand(2),
-                    new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
-                    new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.shootSpeaker(), s_Intake),
-                    new WaitCommand(1),
-                    new InstantCommand(() -> s_Shooter.stop()),
-                    new InstantCommand(() -> s_Intake.stop()),
-                   new InstantCommand(() -> States.armState = States.ArmStates.Source),
-                    new WaitCommand(1),                   
+                    c_shootStop,
+                    c_intakeStop
+                    );  
+
+    private final SequentialCommandGroup c_shootSpeaker = 
+        new SequentialCommandGroup(c_speakerAngle, new WaitCommand(1), c_shootFast);          
+
+    private final SequentialCommandGroup c_sourceSide = 
+        new SequentialCommandGroup(
+                    c_shootSpeaker,
+                    c_sourceAngle,              
                     new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.3, 0), 0, true, false), s_Swerve),
                     new WaitCommand(8)
                     );
 
-    private final SequentialCommandGroup straightBack = 
+    private final SequentialCommandGroup c_straightBack = 
         new SequentialCommandGroup(
-                   new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-                    new WaitCommand(2),
-                    new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
-                    new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.shootSpeaker(), s_Intake),
-                    new WaitCommand(1),
-                    new InstantCommand(() -> s_Shooter.stop()),
-                    new InstantCommand(() -> s_Intake.stop()),
-                    new InstantCommand(() -> States.armState = States.ArmStates.Source),
-                    new WaitCommand(1),                   
+                    c_shootSpeaker,
+                    c_sourceAngle,               
                     new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
                     new WaitCommand(4)
                     );
 
-    public final SequentialCommandGroup rightSide = 
+    public final SequentialCommandGroup c_ampSide = 
         new SequentialCommandGroup(
-                     new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-                    new WaitCommand(2),
-                    new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
-                    new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.shootSpeaker(), s_Intake),
-                    new WaitCommand(1),
-                    new InstantCommand(() -> s_Shooter.stop()),
-                    new InstantCommand(() -> s_Intake.stop()),
-                    new InstantCommand(() -> States.armState = States.ArmStates.Source),
-                    new WaitCommand(1),
+                    c_shootSpeaker,
+                    c_sourceAngle,
                     new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
                     new WaitCommand(2),
                     new InstantCommand(() -> s_Swerve.drive(new Translation2d(1, 1), s_Swerve.getPose().getRotation().getDegrees() * -1, true, false), s_Swerve),
@@ -136,33 +154,10 @@ public class RobotContainer
                     new WaitCommand(5)
                     );
 
-    public final SequentialCommandGroup shootStop = 
-        new SequentialCommandGroup(
-                     new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-                    new WaitCommand(2),
-                    new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
-                    new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.shootSpeaker(), s_Intake),
-                    new WaitCommand(1),
-                    new InstantCommand(() -> s_Shooter.stop()),
-                    new InstantCommand(() -> s_Intake.stop()),
-                    new InstantCommand(() -> States.armState = States.ArmStates.Source)
-                    );
-
-    public final SequentialCommandGroup intakeFloor = 
-        new SequentialCommandGroup(
-                    new InstantCommand(() -> States.armState = States.ArmStates.Floor),
-                    new InstantCommand(() -> s_Intake.shootAmp(), s_Intake),
-                    new WaitCommand(3),
-                    new InstantCommand(() -> s_Intake.stop()),
-                    new InstantCommand(() -> States.armState = States.ArmStates.Source)
-                    );
-
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
-
-        NamedCommands.registerCommand("Intake Floor", intakeFloor);
+        NamedCommands.registerCommand("Intake Floor", c_intakeSlow);
         autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -190,7 +185,7 @@ public class RobotContainer
         s_Shooter.setDefaultCommand(
         Commands.run(
             () ->
-                s_Shooter.shootManual(operator.getRightY()), s_Shooter
+                s_Shooter.manual(operator.getRightY()), s_Shooter
             )
         );
 
@@ -206,10 +201,10 @@ public class RobotContainer
         // Configure the button bindings
         configureButtonBindings();
 
-        autoChooser.setDefaultOption("Swervy D on the LEFT", leftSide);
-        autoChooser.addOption("Swervy D in the CENTER", straightBack);
-        autoChooser.addOption("Swervy D on the RIGHT", rightSide);
-        autoChooser.addOption("Swervy D SHOOTS ONLY", shootStop);
+        autoChooser.setDefaultOption("Swervy D on the LEFT", c_sourceSide);
+        autoChooser.addOption("Swervy D in the CENTER", c_straightBack);
+        autoChooser.addOption("Swervy D on the RIGHT", c_ampSide);
+        autoChooser.addOption("Swervy D SHOOTS ONLY", c_shootSpeaker);
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
@@ -242,16 +237,16 @@ public class RobotContainer
             new InstantCommand(() -> States.driveState = States.DriveStates.standard)
             );
 
-        arm_source.onTrue(new InstantCommand(() -> States.armState = States.ArmStates.Source));
-        arm_floor.onTrue(new InstantCommand(() -> States.armState = States.ArmStates.Floor));
-        arm_speaker.onTrue(new InstantCommand(() -> States.armState = States.ArmStates.Speaker));
-        arm_amp.onTrue(new InstantCommand(() -> States.armState = States.ArmStates.Amp));
+        arm_source.onTrue(c_sourceAngle);
+        arm_floor.onTrue(c_floorAngle);
+        arm_speaker.onTrue(c_speakerAngle);
+        arm_amp.onTrue(c_ampAngle);
 
         shootSpeaker.onTrue(
                 new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Shooter.shootSpeaker(), s_Shooter),
+                    new InstantCommand(() -> s_Shooter.fast(), s_Shooter),
                     new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.shootSpeaker(), s_Intake),
+                    new InstantCommand(() -> s_Intake.fast(), s_Intake),
                     new WaitCommand(3)
                 )).onFalse(
                     new SequentialCommandGroup(
@@ -262,8 +257,8 @@ public class RobotContainer
 
         shootAmp.whileTrue(
                 new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Shooter.shootAmp(), s_Shooter),
-                    new InstantCommand(() -> s_Intake.shootAmp(), s_Intake),
+                    new InstantCommand(() -> s_Shooter.slow(), s_Shooter),
+                    new InstantCommand(() -> s_Intake.slow(), s_Intake),
                     new WaitCommand(3)
                 )).onFalse(
                     new SequentialCommandGroup(

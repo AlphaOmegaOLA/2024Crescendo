@@ -22,12 +22,12 @@ public class Intake extends SubsystemBase
         intakeMotor.set(speed * .45);
     }
 
-    public void shootAmp()
+    public void slow()
     {
         intakeMotor.set(ShooterIntakeConstants.Intake.HALF_SPEED);
     }
 
-    public void shootSpeaker()
+    public void fast()
     {
         intakeMotor.set(ShooterIntakeConstants.Intake.FULL_SPEED);
     }

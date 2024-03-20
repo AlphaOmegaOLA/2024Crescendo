@@ -20,19 +20,19 @@ public class Shooter extends SubsystemBase
         rightShooterMotor.setOpenLoopRampRate(.5);
     }
 
-    public void shootAmp()
+    public void slow()
     {
         leftShooterMotor.set(-ShooterIntakeConstants.Shooter.HALF_SPEED);
         rightShooterMotor.set(-ShooterIntakeConstants.Shooter.HALF_SPEED);
     }
 
-    public void shootSpeaker()
+    public void fast()
     {
         leftShooterMotor.set(-ShooterIntakeConstants.Shooter.FULL_SPEED);
         rightShooterMotor.set(-ShooterIntakeConstants.Shooter.FULL_SPEED);
     }
 
-    public void shootManual(double speed)
+    public void manual(double speed)
     {
         leftShooterMotor.set(speed * .5);
         rightShooterMotor.set(speed * .5);        
