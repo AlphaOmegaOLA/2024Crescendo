@@ -22,18 +22,18 @@ public class Intake extends SubsystemBase
         intakeMotor.set(speed * .45);
     }
 
-    public void slow()
+    public void intakeSlow()
     {
         intakeMotor.set(ShooterIntakeConstants.Intake.HALF_SPEED);
     }
 
-    public void fast()
+    public void intakeFast()
     {
         intakeMotor.set(ShooterIntakeConstants.Intake.FULL_SPEED);
     }
 
     // Stop the rollers when called
-    public void stop()
+    public void intakeStop()
     {
         intakeMotor.set(0);
     }

@@ -76,8 +76,6 @@ public class RobotContainer
 
     private final UsbCamera usbcamera;
 
-
-
     /* Commands */
 
     // Distance in meters: Feet to meters is feet * 0.3048;
@@ -90,34 +88,34 @@ public class RobotContainer
     private final InstantCommand c_ampAngle = new InstantCommand(() -> States.armState = States.ArmStates.Amp);
 
     private final SequentialCommandGroup c_intakeStop = 
-        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.stop(), s_Intake));   
+        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.intakeStop(), s_Intake));   
 
     private final SequentialCommandGroup c_intakeFast = 
-        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.fast(), s_Intake));   
+        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.intakeFast(), s_Intake));   
 
     private final SequentialCommandGroup c_intakeSlow = 
-        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.slow(), s_Intake));             
+        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.intakeSlow(), s_Intake));             
 
     private final SequentialCommandGroup c_shootStop = 
         new SequentialCommandGroup(
-                new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
-                new InstantCommand(() -> s_Intake.stop(), s_Intake)
+                new InstantCommand(() -> s_Shooter.shooterStop(), s_Shooter),
+                new InstantCommand(() -> s_Intake.intakeStop(), s_Intake)
                 );  
 
     private final SequentialCommandGroup c_shootFast = 
         new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Shooter.fast(), s_Shooter),
+                    new InstantCommand(() -> s_Shooter.shootFast(), s_Shooter),
                     new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.fast(), s_Intake),
+                    new InstantCommand(() -> s_Intake.intakeFast(), s_Intake),
                     new WaitCommand(1),
                     c_shootStop,
                     c_intakeStop
-                    );
+                    ); 
 
     private final SequentialCommandGroup c_shootSlow = 
         new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Shooter.slow(), s_Shooter),
-                    new InstantCommand(() -> s_Intake.slow(), s_Intake),
+                    new InstantCommand(() -> s_Shooter.shootSlow(), s_Shooter),
+                    new InstantCommand(() -> s_Intake.intakeSlow(), s_Intake),
                     new WaitCommand(2),
                     c_shootStop,
                     c_intakeStop
@@ -209,10 +207,10 @@ public class RobotContainer
         // Configure the button bindings
         configureButtonBindings();
 
-        autoChooser.setDefaultOption("Swervy D on the LEFT", c_sourceSideAuto);
-        autoChooser.addOption("Swervy D in the CENTER", c_straightBackAuto);
-        autoChooser.addOption("Swervy D on the RIGHT", c_ampSideAuto);
-        autoChooser.addOption("Swervy D SHOOTS ONLY", c_shootSpeakerOnlyAuto);
+        autoChooser.addOption("SOURCE SIDE: Shoot and Roll", c_sourceSideAuto);
+        autoChooser.addOption("CENTER: Shoot and Roll", c_straightBackAuto);
+        autoChooser.addOption("AMP SIDE: Shoot and Roll", c_ampSideAuto);
+        autoChooser.addOption("SHOOT ONLY", c_shootSpeakerOnlyAuto);
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
@@ -252,26 +250,26 @@ public class RobotContainer
 
         shootSpeaker.onTrue(
                 new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Shooter.fast(), s_Shooter),
+                    new InstantCommand(() -> s_Shooter.shootFast(), s_Shooter),
                     new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.fast(), s_Intake),
+                    new InstantCommand(() -> s_Intake.intakeFast(), s_Intake),
                     new WaitCommand(3)
                 )).onFalse(
                     new SequentialCommandGroup(
-                        new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
-                        new InstantCommand(() -> s_Intake.stop(), s_Intake)
+                        new InstantCommand(() -> s_Shooter.shooterStop(), s_Shooter),
+                        new InstantCommand(() -> s_Intake.intakeStop(), s_Intake)
                     )
                 );
 
         shootAmp.whileTrue(
                 new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Shooter.slow(), s_Shooter),
-                    new InstantCommand(() -> s_Intake.slow(), s_Intake),
+                    new InstantCommand(() -> s_Shooter.shootSlow(), s_Shooter),
+                    new InstantCommand(() -> s_Intake.intakeSlow(), s_Intake),
                     new WaitCommand(3)
                 )).onFalse(
                     new SequentialCommandGroup(
-                        new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
-                        new InstantCommand(() -> s_Intake.stop(), s_Intake)
+                        new InstantCommand(() -> s_Shooter.shooterStop(), s_Shooter),
+                        new InstantCommand(() -> s_Intake.intakeStop(), s_Intake)
                     )
                 );
     }       
