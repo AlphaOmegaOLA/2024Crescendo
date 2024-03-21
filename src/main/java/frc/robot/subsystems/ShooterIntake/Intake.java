@@ -23,12 +23,14 @@ public class Intake extends SubsystemBase
         intakeMotor.set(speed * .45);
     }
 
+    // Run intake at reduced speed
     public Command slow()
     {
         return this.startEnd(() -> this.intakeMotor.set(ShooterIntakeConstants.Intake.HALF_SPEED), 
             () -> this.intakeMotor.set(0));
     }
 
+    // Run intake at full speed
     public Command fast()
     {
         return this.startEnd(() -> this.intakeMotor.set(ShooterIntakeConstants.Intake.FULL_SPEED), 

@@ -34,7 +34,6 @@ public class PIDArmCommand extends Command
   @Override
   public void execute() 
   {
-
     switch(States.armState)
     {
         case standard:
@@ -55,7 +54,6 @@ public class PIDArmCommand extends Command
     }
 
     PIDArm.runArm(armController.calculate(PIDArm.getAngle(), PIDArm.setpoint));
-
   }
 
   // Called once the command ends or is interrupted.
