@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -18,7 +19,6 @@ import frc.robot.subsystems.ShooterIntake.PIDArm;
 import frc.robot.subsystems.ShooterIntake.Shooter;
 import frc.robot.subsystems.swerve.rev.RevSwerve;
 import frc.robot.constants.ControllerMap;
-import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.commands.*;
 
 /* PathPlanner */
@@ -60,100 +60,60 @@ public class RobotContainer
     private final POVButton left = new POVButton(driver, 0);
 
     /* Operator Buttons */
+
+    // B = Source Angle
     private final JoystickButton arm_source = new JoystickButton(operator, XboxController.Button.kB.value);
+    // X = Floor Angle
     private final JoystickButton arm_floor = new JoystickButton(operator, XboxController.Button.kX.value);
+    // Y = Speaker Angle
     private final JoystickButton arm_speaker = new JoystickButton(operator, XboxController.Button.kY.value);
+    // A = Amp Angle
     private final JoystickButton arm_amp = new JoystickButton(operator, XboxController.Button.kA.value);
+    // Right Bumper = Shoot Amp (Shooter and Intake simultaneously at half speed)
     private final JoystickButton shootAmp = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+    // Left Bumper = Shoot Speaker (Shooter starts then Intake feeds 1 second later both at full speed)
     private final JoystickButton shootSpeaker = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
   
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
-    //private final Arm s_Arm = new Arm();
     private final PIDArm s_Arm = new PIDArm();
     private final Intake s_Intake = new Intake();
     private final Shooter s_Shooter = new Shooter();
 
+    // Microsoft Life cam on arm
     private final UsbCamera usbcamera;
-
-
 
     /* Commands */
 
-    // Distance in meters: Feet to meters is feet * 0.3048;
-    // Duration in seconds
-    // speed is meters per second for the drive command: duration / distance
-
+    // Arm states
     private final InstantCommand c_floorAngle = new InstantCommand(() -> States.armState = States.ArmStates.Floor);
     private final InstantCommand c_speakerAngle = new InstantCommand(() -> States.armState = States.ArmStates.Speaker);
     private final InstantCommand c_sourceAngle = new InstantCommand(() -> States.armState = States.ArmStates.Source);
     private final InstantCommand c_ampAngle = new InstantCommand(() -> States.armState = States.ArmStates.Amp);
 
-    private final SequentialCommandGroup c_intakeStop = 
-        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.stop(), s_Intake));   
+    // Shooter-Intake commands
 
-    private final SequentialCommandGroup c_intakeFast = 
-        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.fast(), s_Intake));   
+    // Shooter starts fast and then the amp does 1-second later both at full speed while the Left Bumper is pressed
+    private final SequentialCommandGroup c_shootFast = s_Shooter.fast().alongWith(new WaitCommand(1)).andThen(s_Intake.fast());
 
-    private final SequentialCommandGroup c_intakeSlow = 
-        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.slow(), s_Intake));             
+    // Same as c_shootFast above but it stops the motors after 3 seconds
+    private final SequentialCommandGroup c_shootFastAuto = s_Shooter.fast().withTimeout(3).alongWith(
+        new WaitCommand(1)).andThen(
+            s_Intake.fast().withTimeout(1));
 
-    private final SequentialCommandGroup c_shootStop = 
-        new SequentialCommandGroup(
-                new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
-                new InstantCommand(() -> s_Intake.stop(), s_Intake)
-                );  
+    // Shooter and intake start simultaneoulsy and run half speed while the right button is pressed
+    private final ParallelCommandGroup c_shootSlow = s_Shooter.slow().alongWith(s_Intake.slow());  
 
-    private final SequentialCommandGroup c_shootFast = 
-        new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Shooter.fast(), s_Shooter),
-                    new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.fast(), s_Intake),
-                    new WaitCommand(1),
-                    c_shootStop,
-                    c_intakeStop
-                    );
+    // Intake at full speed while the joystick is pressed
+    private final Command c_intakeFast = s_Intake.fast();
 
-    private final SequentialCommandGroup c_shootSlow = 
-        new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Shooter.slow(), s_Shooter),
-                    new InstantCommand(() -> s_Intake.slow(), s_Intake),
-                    new WaitCommand(2),
-                    c_shootStop,
-                    c_intakeStop
-                    );  
-
-    private final SequentialCommandGroup c_shootSpeakerOnlyAuto = 
-        new SequentialCommandGroup(c_speakerAngle, new WaitCommand(1), c_shootFast);          
-
-    private final SequentialCommandGroup c_sourceSideAuto = 
-        new SequentialCommandGroup(
-                    c_shootSpeakerOnlyAuto,
-                    c_sourceAngle,              
-                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.3, 0), 0, true, false), s_Swerve),
-                    new WaitCommand(8)
-                    );
-
-    private final SequentialCommandGroup c_straightBackAuto = 
-        new SequentialCommandGroup(
-                    c_shootSpeakerOnlyAuto,
-                    c_sourceAngle,               
-                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
-                    new WaitCommand(4)
-                    );
-
-    public final SequentialCommandGroup c_ampSideAuto = 
-        new SequentialCommandGroup(
-                    c_shootSpeakerOnlyAuto,
-                    c_sourceAngle,
-                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
-                    new WaitCommand(2),
-                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(1, 1), s_Swerve.getPose().getRotation().getDegrees() * -1, true, false), s_Swerve),
-                    new WaitCommand(3),
-                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
-                    new WaitCommand(5)
-                    );
-
+    // Intake at full speed with a 2-second timeout
+    private final Command c_intakeFastAuto = s_Intake.fast().withTimeout(2);
+    
+    // Move arm to speaker angle, 
+    private final SequentialCommandGroup c_shootSpeakerOnlyAuto = c_speakerAngle.andThen(
+        c_shootFastAuto).andThen(c_sourceAngle);
+    
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
@@ -162,15 +122,15 @@ public class RobotContainer
         NamedCommands.registerCommand("Arm Floor Angle", c_floorAngle);
         NamedCommands.registerCommand("Arm Source Angle", c_sourceAngle);
         NamedCommands.registerCommand("Arm Speaker Angle", c_speakerAngle);
-        NamedCommands.registerCommand("Intake Fast", c_intakeFast);
-        NamedCommands.registerCommand("Intake Slow", c_intakeSlow);
-        NamedCommands.registerCommand("Intake Stop", c_intakeStop);
-        NamedCommands.registerCommand("Shoot Fast", c_shootFast);
-        NamedCommands.registerCommand("Shoot Slow", c_shootSlow);
-        NamedCommands.registerCommand("Shoot Stop", c_shootStop);
-        autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+        NamedCommands.registerCommand("Intake Fast", c_intakeFastAuto);
+        NamedCommands.registerCommand("Shoot Slow", c_shootFastAuto);
+        
+        // Pathplanner auto builder from commands in the deploy/pathplanner
+        // Default auto will be `Commands.none()
+        autoChooser = AutoBuilder.buildAutoChooser(); 
         SmartDashboard.putData("Auto Mode", autoChooser);
         
+        // Sets up Swerve with a dampener tied to the right bumper button
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
@@ -183,25 +143,20 @@ public class RobotContainer
             )
         );
 
+        // Manual intake with left joystick
         s_Intake.setDefaultCommand(
-        Commands.run(
-            () ->
-                s_Intake.intake(operator.getLeftY()), s_Intake
-            )
+        Commands.run(() -> s_Intake.intake(operator.getLeftY()), s_Intake)
         );
         
+        // Manual intake with right joystick. We only have one on our
+        // new operator console but there's a switch to change which
+        // joystick it is and we shouldn't need this anymore.
         s_Shooter.setDefaultCommand(
-        Commands.run(
-            () ->
-                s_Shooter.manual(operator.getRightY()), s_Shooter
-            )
+        Commands.run(() -> s_Shooter.manual(operator.getRightY()), s_Shooter)
         );
 
-        s_Arm.setDefaultCommand(
-            new PIDArmCommand(
-                s_Arm        
-            )
-        );
+        // The defaults arm state is whatever angle it's at
+        s_Arm.setDefaultCommand(new PIDArmCommand(s_Arm));
 
         // Camera
         usbcamera = CameraServer.startAutomaticCapture();
@@ -209,10 +164,7 @@ public class RobotContainer
         // Configure the button bindings
         configureButtonBindings();
 
-        autoChooser.setDefaultOption("Swervy D on the LEFT", c_sourceSideAuto);
-        autoChooser.addOption("Swervy D in the CENTER", c_straightBackAuto);
-        autoChooser.addOption("Swervy D on the RIGHT", c_ampSideAuto);
-        autoChooser.addOption("Swervy D SHOOTS ONLY", c_shootSpeakerOnlyAuto);
+        // Put the autonomous chooser menu on the dashboard
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
@@ -225,9 +177,11 @@ public class RobotContainer
     private void configureButtonBindings() 
     {
         /* Driver Buttons */
+
+        // Zero out the heading when the match starts. Can we automate this?
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
-        //heading lock bindings
+        // Heading Lock Bindings
         up.onTrue(
             new InstantCommand(() -> States.driveState = States.DriveStates.d90)).onFalse(
             new InstantCommand(() -> States.driveState = States.DriveStates.standard)
@@ -250,30 +204,8 @@ public class RobotContainer
         arm_speaker.onTrue(c_speakerAngle);
         arm_amp.onTrue(c_ampAngle);
 
-        shootSpeaker.onTrue(
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Shooter.fast(), s_Shooter),
-                    new WaitCommand(1),
-                    new InstantCommand(() -> s_Intake.fast(), s_Intake),
-                    new WaitCommand(3)
-                )).onFalse(
-                    new SequentialCommandGroup(
-                        new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
-                        new InstantCommand(() -> s_Intake.stop(), s_Intake)
-                    )
-                );
-
-        shootAmp.whileTrue(
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> s_Shooter.slow(), s_Shooter),
-                    new InstantCommand(() -> s_Intake.slow(), s_Intake),
-                    new WaitCommand(3)
-                )).onFalse(
-                    new SequentialCommandGroup(
-                        new InstantCommand(() -> s_Shooter.stop(), s_Shooter),
-                        new InstantCommand(() -> s_Intake.stop(), s_Intake)
-                    )
-                );
+        shootSpeaker.whileTrue(c_shootFast);
+        shootAmp.whileTrue(c_shootSlow);
     }       
         
     /**
@@ -283,9 +215,6 @@ public class RobotContainer
      */
     public Command getAutonomousCommand() 
     {
-
-        //return rightSide;
-        return autoChooser.getSelected();
-        
+        return autoChooser.getSelected(); 
     }
 }

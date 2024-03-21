@@ -3,8 +3,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.ShooterIntakeConstants;
 
+import javax.sound.midi.Sequence;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class Shooter extends SubsystemBase 
 {
@@ -20,27 +23,31 @@ public class Shooter extends SubsystemBase
         rightShooterMotor.setOpenLoopRampRate(.5);
     }
 
-    public void slow()
+    private void setMotors(double speed)
     {
-        leftShooterMotor.set(-ShooterIntakeConstants.Shooter.HALF_SPEED);
-        rightShooterMotor.set(-ShooterIntakeConstants.Shooter.HALF_SPEED);
+        leftShooterMotor.set(speed);
+        rightShooterMotor.set(speed);
     }
 
-    public void fast()
+    public Command slow()
     {
-        leftShooterMotor.set(-ShooterIntakeConstants.Shooter.FULL_SPEED);
-        rightShooterMotor.set(-ShooterIntakeConstants.Shooter.FULL_SPEED);
+        return this.startEnd(() -> this.setMotors(-ShooterIntakeConstants.Shooter.HALF_SPEED),
+            () -> this.setMotors(0));
+    }
+
+    public Command fast()
+    {
+        return this.startEnd(() -> this.setMotors(-ShooterIntakeConstants.Shooter.FULL_SPEED),
+            () -> this.setMotors(0));
     }
 
     public void manual(double speed)
     {
-        leftShooterMotor.set(speed * .5);
-        rightShooterMotor.set(speed * .5);        
+        this.setMotors(speed);       
     }
 
     public void stop()
     {
-        leftShooterMotor.set(0);
-        rightShooterMotor.set(0);
+        this.setMotors(0);
     }
 }
