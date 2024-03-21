@@ -41,7 +41,6 @@ public class RobotContainer
     //private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private final SendableChooser<Command> autoChooser;
 
-
     /* Controllers */
     private final XboxController driver = new XboxController(0);
     private final XboxController operator = new XboxController(1);
@@ -91,6 +90,7 @@ public class RobotContainer
     private final InstantCommand c_sourceAngle = new InstantCommand(() -> States.armState = States.ArmStates.Source);
     private final InstantCommand c_ampAngle = new InstantCommand(() -> States.armState = States.ArmStates.Amp);
 
+<<<<<<< HEAD
     // Shooter-Intake commands
 
     // Shooter starts fast and then the amp does 1-second later both at full speed while the Left Bumper is pressed
@@ -106,6 +106,72 @@ public class RobotContainer
 
     // Intake at full speed while the joystick is pressed
     private final Command c_intakeFast = s_Intake.fast();
+=======
+    private final SequentialCommandGroup c_intakeStop = 
+        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.intakeStop(), s_Intake));   
+
+    private final SequentialCommandGroup c_intakeFast = 
+        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.intakeFast(), s_Intake));   
+
+    private final SequentialCommandGroup c_intakeSlow = 
+        new SequentialCommandGroup(new InstantCommand(() -> s_Intake.intakeSlow(), s_Intake));             
+
+    private final SequentialCommandGroup c_shootStop = 
+        new SequentialCommandGroup(
+                new InstantCommand(() -> s_Shooter.shooterStop(), s_Shooter),
+                new InstantCommand(() -> s_Intake.intakeStop(), s_Intake)
+                );  
+
+    private final SequentialCommandGroup c_shootFast = 
+        new SequentialCommandGroup(
+                    new InstantCommand(() -> s_Shooter.shootFast(), s_Shooter),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Intake.intakeFast(), s_Intake),
+                    new WaitCommand(1),
+                    c_shootStop,
+                    c_intakeStop
+                    ); 
+
+    private final SequentialCommandGroup c_shootSlow = 
+        new SequentialCommandGroup(
+                    new InstantCommand(() -> s_Shooter.shootSlow(), s_Shooter),
+                    new InstantCommand(() -> s_Intake.intakeSlow(), s_Intake),
+                    new WaitCommand(2),
+                    c_shootStop,
+                    c_intakeStop
+                    );  
+
+    private final SequentialCommandGroup c_shootSpeakerOnlyAuto = 
+        new SequentialCommandGroup(c_speakerAngle, new WaitCommand(1), c_shootFast);          
+
+    private final SequentialCommandGroup c_sourceSideAuto = 
+        new SequentialCommandGroup(
+                    c_shootSpeakerOnlyAuto,
+                    c_sourceAngle,              
+                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.3, 0), 0, true, false), s_Swerve),
+                    new WaitCommand(8)
+                    );
+
+    private final SequentialCommandGroup c_straightBackAuto = 
+        new SequentialCommandGroup(
+                    c_shootSpeakerOnlyAuto,
+                    c_sourceAngle,               
+                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
+                    new WaitCommand(4)
+                    );
+
+    public final SequentialCommandGroup c_ampSideAuto = 
+        new SequentialCommandGroup(
+                    c_shootSpeakerOnlyAuto,
+                    c_sourceAngle,
+                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
+                    new WaitCommand(2),
+                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(1, 1), s_Swerve.getPose().getRotation().getDegrees() * -1, true, false), s_Swerve),
+                    new WaitCommand(3),
+                    new InstantCommand(() -> s_Swerve.drive(new Translation2d(-2.0, 0), 0, true, false), s_Swerve),
+                    new WaitCommand(5)
+                    );
+>>>>>>> f8f0039ed2cb983b944429ee146bdb0298fd665d
 
     // Intake at full speed with a 2-second timeout
     private final Command c_intakeFastAuto = s_Intake.fast().withTimeout(2);
@@ -164,7 +230,14 @@ public class RobotContainer
         // Configure the button bindings
         configureButtonBindings();
 
+<<<<<<< HEAD
         // Put the autonomous chooser menu on the dashboard
+=======
+        autoChooser.addOption("SOURCE SIDE: Shoot and Roll", c_sourceSideAuto);
+        autoChooser.addOption("CENTER: Shoot and Roll", c_straightBackAuto);
+        autoChooser.addOption("AMP SIDE: Shoot and Roll", c_ampSideAuto);
+        autoChooser.addOption("SHOOT ONLY", c_shootSpeakerOnlyAuto);
+>>>>>>> f8f0039ed2cb983b944429ee146bdb0298fd665d
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
@@ -204,8 +277,35 @@ public class RobotContainer
         arm_speaker.onTrue(c_speakerAngle);
         arm_amp.onTrue(c_ampAngle);
 
+<<<<<<< HEAD
         shootSpeaker.whileTrue(c_shootFast);
         shootAmp.whileTrue(c_shootSlow);
+=======
+        shootSpeaker.onTrue(
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> s_Shooter.shootFast(), s_Shooter),
+                    new WaitCommand(1),
+                    new InstantCommand(() -> s_Intake.intakeFast(), s_Intake),
+                    new WaitCommand(3)
+                )).onFalse(
+                    new SequentialCommandGroup(
+                        new InstantCommand(() -> s_Shooter.shooterStop(), s_Shooter),
+                        new InstantCommand(() -> s_Intake.intakeStop(), s_Intake)
+                    )
+                );
+
+        shootAmp.whileTrue(
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> s_Shooter.shootSlow(), s_Shooter),
+                    new InstantCommand(() -> s_Intake.intakeSlow(), s_Intake),
+                    new WaitCommand(3)
+                )).onFalse(
+                    new SequentialCommandGroup(
+                        new InstantCommand(() -> s_Shooter.shooterStop(), s_Shooter),
+                        new InstantCommand(() -> s_Intake.intakeStop(), s_Intake)
+                    )
+                );
+>>>>>>> f8f0039ed2cb983b944429ee146bdb0298fd665d
     }       
         
     /**

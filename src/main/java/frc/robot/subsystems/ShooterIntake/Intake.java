@@ -23,16 +23,32 @@ public class Intake extends SubsystemBase
         intakeMotor.set(speed * .45);
     }
 
+<<<<<<< HEAD
     public Command slow()
+=======
+    public void intakeSlow()
+>>>>>>> f8f0039ed2cb983b944429ee146bdb0298fd665d
     {
         return this.startEnd(() -> this.intakeMotor.set(ShooterIntakeConstants.Intake.HALF_SPEED), 
             () -> this.intakeMotor.set(0));
     }
 
+<<<<<<< HEAD
     public Command fast()
     {
         return this.startEnd(() -> this.intakeMotor.set(ShooterIntakeConstants.Intake.FULL_SPEED), 
             () -> this.intakeMotor.set(0));
+=======
+    public void intakeFast()
+    {
+        intakeMotor.set(ShooterIntakeConstants.Intake.FULL_SPEED);
+    }
+
+    // Stop the rollers when called
+    public void intakeStop()
+    {
+        intakeMotor.set(0);
+>>>>>>> f8f0039ed2cb983b944429ee146bdb0298fd665d
     }
 
     // Use the photoeye to see if a note is detected

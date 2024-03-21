@@ -23,13 +23,21 @@ public class Shooter extends SubsystemBase
         rightShooterMotor.setOpenLoopRampRate(.5);
     }
 
+<<<<<<< HEAD
     private void setMotors(double speed)
+=======
+    public void shootSlow()
+>>>>>>> f8f0039ed2cb983b944429ee146bdb0298fd665d
     {
         leftShooterMotor.set(speed);
         rightShooterMotor.set(speed);
     }
 
+<<<<<<< HEAD
     public Command slow()
+=======
+    public void shootFast()
+>>>>>>> f8f0039ed2cb983b944429ee146bdb0298fd665d
     {
         return this.startEnd(() -> this.setMotors(-ShooterIntakeConstants.Shooter.HALF_SPEED),
             () -> this.setMotors(0));
@@ -46,7 +54,7 @@ public class Shooter extends SubsystemBase
         this.setMotors(speed);       
     }
 
-    public void stop()
+    public void shooterStop()
     {
         this.setMotors(0);
     }
