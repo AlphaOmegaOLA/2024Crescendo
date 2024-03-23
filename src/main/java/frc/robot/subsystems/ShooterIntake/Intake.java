@@ -10,11 +10,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class Intake extends SubsystemBase
 {
     private Spark intakeMotor;
+    private DigitalInput photoEye;
 
     public Intake()
     {
         intakeMotor = new Spark(ShooterIntakeConstants.Intake.INTAKE_MOTOR_ID);
-        //photoEye = new DigitalInput(ShooterIntakeConstants.Intake.PHOTOEYE_DIO_ID);
+        photoEye = new DigitalInput(ShooterIntakeConstants.Intake.PHOTOEYE_DIO_ID);
     }
 
     // Take a Note in
@@ -41,14 +42,16 @@ public class Intake extends SubsystemBase
     public boolean hasNote()
     {
         // Can invert this with ! if wiring is backwards
-        //return photoEye.get();
-        return false;
+        return !photoEye.get();
+        //return false;
     }
 
     // Periodically check the status of the intake to see
     // if a note is detected and print the status to the dashboard.
     public void periodic()
     {
-        //SmartDashboard.putBoolean("HAS NOTE", hasNote());
+        SmartDashboard.putBoolean("HAS NOTE", hasNote());
+        System.out.println(hasNote());
+        //System.out.println(hasNote());
     }
 }

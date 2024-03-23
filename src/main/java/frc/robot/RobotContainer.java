@@ -39,7 +39,7 @@ public class RobotContainer
 {
     /* Autonomous menu */
     //private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-    private final SendableChooser<Command> autoChooser;
+    //private final SendableChooser<Command> autoChooser;
 
     /* Controllers */
     private final XboxController driver = new XboxController(0);
@@ -93,12 +93,12 @@ public class RobotContainer
     // Shooter-Intake commands
 
     // Shooter starts fast and then the amp does 1-second later both at full speed while the Left Bumper is pressed
-    private final SequentialCommandGroup c_shootFast = s_Shooter.fast().alongWith(new WaitCommand(1)).andThen(s_Intake.fast());
+    private final ParallelCommandGroup c_shootFast = s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()));
 
     // Same as c_shootFast above but it stops the motors after 3 seconds
     private final SequentialCommandGroup c_shootFastAuto = s_Shooter.fast().withTimeout(3).alongWith(
         new WaitCommand(1)).andThen(
-            s_Intake.fast().withTimeout(1));
+            s_Intake.fast().withTimeout(3));
 
     // Shooter and intake start simultaneoulsy and run half speed while the right button is pressed
     private final ParallelCommandGroup c_shootSlow = s_Shooter.slow().alongWith(s_Intake.slow());  
@@ -106,28 +106,33 @@ public class RobotContainer
     // Intake at full speed while the joystick is pressed
     private final Command c_intakeFast = s_Intake.fast();
 
-    // Intake at full speed with a 2-second timeout
+    // Intake at full speed until the photoeye detects a note
+    private final Command c_intakeNote = s_Intake.fast().until(s_Intake::hasNote);
+
+    // Intake at full speed with a 2-second timeout - For testing need to switch to intakeNote and delete
     private final Command c_intakeFastAuto = s_Intake.fast().withTimeout(2);
     
     // Move arm to speaker angle, 
-    private final SequentialCommandGroup c_shootSpeakerOnlyAuto = c_speakerAngle.andThen(
-        c_shootFastAuto).andThen(c_sourceAngle);
+    //private final SequentialCommandGroup c_shootSpeakerOnlyAuto = c_speakerAngle.andThen(
+    //    c_shootFastAuto).andThen(c_sourceAngle);
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
         // PathPlanner registered commands
+        /* 
         NamedCommands.registerCommand("Arm Amp Angle", c_ampAngle);
         NamedCommands.registerCommand("Arm Floor Angle", c_floorAngle);
         NamedCommands.registerCommand("Arm Source Angle", c_sourceAngle);
         NamedCommands.registerCommand("Arm Speaker Angle", c_speakerAngle);
         NamedCommands.registerCommand("Intake Fast", c_intakeFastAuto);
-        NamedCommands.registerCommand("Shoot Slow", c_shootFastAuto);
+        NamedCommands.registerCommand("Shoot Fast", c_shootFastAuto);
+        */
         
         // Pathplanner auto builder from commands in the deploy/pathplanner
         // Default auto will be `Commands.none()
-        autoChooser = AutoBuilder.buildAutoChooser(); 
-        SmartDashboard.putData("Auto Mode", autoChooser);
+        //autoChooser = AutoBuilder.buildAutoChooser(); 
+        //SmartDashboard.putData("Auto Mode", autoChooser);
         
         // Sets up Swerve with a dampener tied to the right bumper button
         s_Swerve.setDefaultCommand(
@@ -164,7 +169,7 @@ public class RobotContainer
         configureButtonBindings();
 
         // Put the autonomous chooser menu on the dashboard
-        SmartDashboard.putData("Auto Mode", autoChooser);
+        //SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
     /**
@@ -214,6 +219,7 @@ public class RobotContainer
      */
     public Command getAutonomousCommand() 
     {
-        return autoChooser.getSelected(); 
+        //return autoChooser.getSelected(); 
+        return null;
     }
 }
