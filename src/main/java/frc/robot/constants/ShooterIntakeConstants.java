@@ -24,7 +24,7 @@ public final class ShooterIntakeConstants
 
         //ARM PHOTOEYE LIMIT SWITCH
         public static final int PHOTOEYE_DIO_ID = 1;
-
+    
         // ARM ANGLES
         // Need to determine the starting offset angle of the
         // Rev Through Bore Encoder and set it here:

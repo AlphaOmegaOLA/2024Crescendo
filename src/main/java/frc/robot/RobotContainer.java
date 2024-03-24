@@ -149,7 +149,7 @@ public class RobotContainer
 
         // Manual intake with left joystick
         s_Intake.setDefaultCommand(
-        Commands.run(() -> s_Intake.intake(operator.getLeftY()), s_Intake)
+            Commands.run(() -> s_Intake.intake(operator.getLeftY()), s_Intake)
         );
         
         // Manual intake with right joystick. We only have one on our
@@ -205,7 +205,8 @@ public class RobotContainer
 
         arm_source.onTrue(c_sourceAngle);
         arm_floor.onTrue(c_floorAngle);
-        arm_speaker.onTrue(c_speakerAngle);
+        arm_speaker.onTrue(c_intakeNote);
+        //arm_speaker.onTrue(c_speakerAngle);
         arm_amp.onTrue(c_ampAngle);
 
         shootSpeaker.whileTrue(c_shootFast);
