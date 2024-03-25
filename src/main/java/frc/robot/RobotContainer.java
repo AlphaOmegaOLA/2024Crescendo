@@ -38,8 +38,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 public class RobotContainer 
 {
     /* Autonomous menu */
-    //private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-    //private final SendableChooser<Command> autoChooser;
+    private final SendableChooser<Command> autoChooser;
 
     /* Controllers */
     private final XboxController driver = new XboxController(0);
@@ -120,19 +119,17 @@ public class RobotContainer
     public RobotContainer() 
     {
         // PathPlanner registered commands
-        /* 
         NamedCommands.registerCommand("Arm Amp Angle", c_ampAngle);
         NamedCommands.registerCommand("Arm Floor Angle", c_floorAngle);
         NamedCommands.registerCommand("Arm Source Angle", c_sourceAngle);
         NamedCommands.registerCommand("Arm Speaker Angle", c_speakerAngle);
-        NamedCommands.registerCommand("Intake Fast", c_intakeFastAuto);
+        NamedCommands.registerCommand("Intake Note", c_intakeNote);
         NamedCommands.registerCommand("Shoot Fast", c_shootFastAuto);
-        */
         
         // Pathplanner auto builder from commands in the deploy/pathplanner
-        // Default auto will be `Commands.none()
-        //autoChooser = AutoBuilder.buildAutoChooser(); 
-        //SmartDashboard.putData("Auto Mode", autoChooser);
+        // Default auto will be Commands.none()
+        autoChooser = AutoBuilder.buildAutoChooser(); 
+        SmartDashboard.putData("Auto Mode", autoChooser);
         
         // Sets up Swerve with a dampener tied to the right bumper button
         s_Swerve.setDefaultCommand(
@@ -205,8 +202,8 @@ public class RobotContainer
 
         arm_source.onTrue(c_sourceAngle);
         arm_floor.onTrue(c_floorAngle);
-        arm_speaker.onTrue(c_intakeNote);
-        //arm_speaker.onTrue(c_speakerAngle);
+        //arm_speaker.onTrue(c_intakeNote);
+        arm_speaker.onTrue(c_speakerAngle);
         arm_amp.onTrue(c_ampAngle);
 
         shootSpeaker.whileTrue(c_shootFast);
