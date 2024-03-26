@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Speaker Angle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Fast"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "08 Src Roll"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Zero Gyro"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

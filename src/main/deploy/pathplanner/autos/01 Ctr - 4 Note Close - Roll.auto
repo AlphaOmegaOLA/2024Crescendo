@@ -1,0 +1,187 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Speaker Angle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Fast"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Floor Angle"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Note"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "03 Ctr - Mid Note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Arm Speaker Angle"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "04 Mid Note - Ctr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Fast"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Floor Angle"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Note"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "01 Ctr - Amp Note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Arm Speaker Angle"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "02 Amp Note - Ctr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Fast"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Floor Angle"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Note"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "05 Ctr - Src Note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Arm Speaker Angle"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "06 Src Note - Ctr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Fast"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "03 Ctr - Mid Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Zero Gyro"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

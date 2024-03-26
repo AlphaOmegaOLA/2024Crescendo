@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve.rev;
 import frc.lib.math.GeometryUtils;
 import frc.robot.Constants;
 import frc.robot.constants.RevSwerveConstants;
+import frc.robot.constants.ShooterIntakeConstants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -184,6 +186,12 @@ public class RevSwerve extends SubsystemBase {
 
     public void zeroGyro() {  
        zeroGyro(0);
+    }
+
+    // Zero out Gyro
+    public Command setGyroToZero()
+    {
+        return this.runOnce(() -> this.zeroGyro()); 
     }
 
     public Rotation2d getYaw() {

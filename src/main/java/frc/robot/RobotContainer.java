@@ -110,11 +110,10 @@ public class RobotContainer
 
     // Intake at full speed with a 2-second timeout - For testing need to switch to intakeNote and delete
     private final Command c_intakeFastAuto = s_Intake.fast().withTimeout(2);
-    
-    // Move arm to speaker angle, 
-    //private final SequentialCommandGroup c_shootSpeakerOnlyAuto = c_speakerAngle.andThen(
-    //    c_shootFastAuto).andThen(c_sourceAngle);
-    
+
+    // Zero out the gyro at the end of the autonomous period
+    private final Command c_zeroGyro = s_Swerve.setGyroToZero();
+        
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
@@ -125,6 +124,7 @@ public class RobotContainer
         NamedCommands.registerCommand("Arm Speaker Angle", c_speakerAngle);
         NamedCommands.registerCommand("Intake Note", c_intakeNote);
         NamedCommands.registerCommand("Shoot Fast", c_shootFastAuto);
+        NamedCommands.registerCommand("Zero Gyro", c_zeroGyro);
         
         // Pathplanner auto builder from commands in the deploy/pathplanner
         // Default auto will be Commands.none()
