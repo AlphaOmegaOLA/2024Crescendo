@@ -20,6 +20,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -199,22 +201,8 @@ public class RevSwerve extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {
-        /* 
-        SmartDashboard.putNumber("yaw", gyro.getYaw());
-        for(SwerveModule mod : mSwerveMods) {
-            SmartDashboard.putNumber("REV Mod " + mod.getModuleNumber() + " Cancoder", mod.getCanCoder().getDegrees());
-            SmartDashboard.putNumber("REV Mod " + mod.getModuleNumber() + " Integrated", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("REV Mod " + mod.getModuleNumber() + " Velocity", mod.getState().speedMetersPerSecond);    
-        }
-        */
-
-        Pose2d currentPose = getPose();
-
-        // Assuming you're starting from (0, 0), but you could adjust this based on initial pose if necessary
-        double distanceTraveled = Math.sqrt(Math.pow(currentPose.getX(), 2) + Math.pow(currentPose.getY(), 2));
-    
-        // Display the distance traveled on SmartDashboard
-        SmartDashboard.putNumber("Distance Traveled (m)", distanceTraveled);
+    public void periodic() 
+    {
+   
     }
 }

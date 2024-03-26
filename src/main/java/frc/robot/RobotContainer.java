@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -92,12 +93,10 @@ public class RobotContainer
     // Shooter-Intake commands
 
     // Shooter starts fast and then the amp does 1-second later both at full speed while the Left Bumper is pressed
-    private final ParallelCommandGroup c_shootFast = s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()));
+    private final ParallelCommandGroup c_shootFast = s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()));
 
     // Same as c_shootFast above but it stops the motors after 3 seconds
-    private final SequentialCommandGroup c_shootFastAuto = s_Shooter.fast().withTimeout(3).alongWith(
-        new WaitCommand(1)).andThen(
-            s_Intake.fast().withTimeout(3));
+    private final ParallelCommandGroup c_shootFastAuto = s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast().until(s_Intake::hasNote)));
 
     // Shooter and intake start simultaneoulsy and run half speed while the right button is pressed
     private final ParallelCommandGroup c_shootSlow = s_Shooter.slow().alongWith(s_Intake.slow());  
@@ -109,7 +108,7 @@ public class RobotContainer
     private final Command c_intakeNote = s_Intake.fast().until(s_Intake::hasNote);
 
     // Intake at full speed with a 2-second timeout - For testing need to switch to intakeNote and delete
-    private final Command c_intakeFastAuto = s_Intake.fast().withTimeout(2);
+    private final Command c_intakeFastAuto = s_Intake.fast();
 
     // Zero out the gyro at the end of the autonomous period
     private final Command c_zeroGyro = s_Swerve.setGyroToZero();
@@ -217,7 +216,7 @@ public class RobotContainer
      */
     public Command getAutonomousCommand() 
     {
-        //return autoChooser.getSelected(); 
-        return null;
+        return autoChooser.getSelected(); 
+        //return null;
     }
 }

@@ -41,6 +41,11 @@ public class Intake extends SubsystemBase
             () -> this.intakeMotor.set(0));
     }
 
+    public void intakeStop()
+    {
+        intakeMotor.set(0);
+    } 
+
     // Use the photoeye to see if a note is detected
     public boolean hasNote()
     {
