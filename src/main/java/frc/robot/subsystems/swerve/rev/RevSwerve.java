@@ -12,8 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import java.text.BreakIterator;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,19 +32,22 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
-public class RevSwerve extends SubsystemBase {
-
-
+public class RevSwerve extends SubsystemBase 
+{
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
     public SwerveDriveKinematics kinematics;
+    
+    private final Field2d m_field = new Field2d();
 
     public RevSwerve() 
     {
         
         gyro = new Pigeon2(RevSwerveConstants.REV.pigeonID);
         gyro.configFactoryDefault();
+
+        SmartDashboard.putData("Field", m_field);
 
         mSwerveMods = new SwerveModule[] 
         {
@@ -141,7 +142,6 @@ public class RevSwerve extends SubsystemBase {
         setModuleStates(targetStates);
     }
 
-
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
 
@@ -203,6 +203,29 @@ public class RevSwerve extends SubsystemBase {
     @Override
     public void periodic() 
     {
-   
+        SmartDashboard.putData("Swerve Drive", new Sendable() 
+        {
+                @Override
+                public void initSendable(SendableBuilder builder) 
+                {
+                    builder.setSmartDashboardType("SwerveDrive");
+            
+                    builder.addDoubleProperty("Front Left Angle", () -> mSwerveMods[0].getState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Front Left Velocity", () -> mSwerveMods[0].getState().speedMetersPerSecond, null);
+                
+                    builder.addDoubleProperty("Front Right Angle", () -> mSwerveMods[1].getState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Front Right Velocity", () -> mSwerveMods[1].getState().speedMetersPerSecond, null);
+                
+                    builder.addDoubleProperty("Back Left Angle", () -> mSwerveMods[2].getState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Back Left Velocity", () -> mSwerveMods[2].getState().speedMetersPerSecond, null);
+                
+                    builder.addDoubleProperty("Back Right Angle", () -> mSwerveMods[3].getState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Back Right Velocity", () -> mSwerveMods[3].getState().speedMetersPerSecond, null);
+                
+                    builder.addDoubleProperty("Robot Angle", () -> getYaw().getRadians(), null);
+                }
+            }); 
+
+            m_field.setRobotPose(swerveOdometry.getPoseMeters());
     }
 }

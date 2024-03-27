@@ -119,18 +119,12 @@ public class RevSwerveModule implements SwerveModule
         mDriveMotor.setSmartCurrentLimit(RevSwerveConfig.driveContinuousCurrentLimit);
         mDriveMotor.setInverted(RevSwerveConfig.driveMotorInvert);
         mDriveMotor.setIdleMode(RevSwerveConfig.driveIdleMode); 
-    
-       
-       
-       
     }
 
 
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
-    {
-        
-        
+    { 
         /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
         // CTREModuleState actually works for any type of motor.
         desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
@@ -186,7 +180,6 @@ public class RevSwerveModule implements SwerveModule
         
     }
 
-   
 
     private Rotation2d getAngle()
     {
