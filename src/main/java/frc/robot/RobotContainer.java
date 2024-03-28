@@ -83,9 +83,6 @@ public class RobotContainer
     // Microsoft Life cam on arm
     private final UsbCamera usbcamera;
 
-    // Autonomous menu
-    private final SendableChooser<String> autoChooser = new SendableChooser<>();
-
     /* Commands */
 
     // Arm states
@@ -194,6 +191,7 @@ public class RobotContainer
         // Pathplanner auto builder from commands in the deploy/pathplanner
         // Default auto will be Commands.none()
         //autoChooser = AutoBuilder.buildAutoChooser(); 
+        autoChooser = new SendableChooser<>();
         SmartDashboard.putData("Auto Mode", autoChooser);
         autoChooser.addOption("4 Note Auto", a_fourNoteAuto);
         autoChooser.setDefaultOption("Shoot Only", a_shootOnly);
