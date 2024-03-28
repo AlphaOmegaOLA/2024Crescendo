@@ -132,7 +132,9 @@ public class RobotContainer
         s_Intake.fast().until(s_Intake::hasNote),
         new AutoDriveCommand(s_Swerve, "backward", 76.375, 1.8),
         new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-        new AutoDriveCommand(s_Swerve, "forward", 76.375, 1.8));
+        new AutoDriveCommand(s_Swerve, "forward", 76.375, 1.8),
+        new ParallelDeadlineGroup(new WaitCommand(4), 
+            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()))));
 
     // Lower the arm to the floor, roll right, roll back and grab center note, roll forward, 
     // roll left to the center, and shoot
@@ -248,7 +250,7 @@ public class RobotContainer
         SmartDashboard.putData("Auto Mode", autoChooser);
         autoChooser.addOption("4 Note Auto", a_fourNoteAuto);
         autoChooser.setDefaultOption("Shoot Only", a_shootOnly);
-        autoChooser.addOption("Shoot Center Notes and Roll", a_shootCenterNotesAndRoll);
+        autoChooser.addOption("Shoot Center Notes", a_shootCenterNotes);
         autoChooser.addOption("Shoot Amp Notes and Roll", a_shootAmpSideNoteAndRoll);
         autoChooser.addOption("Shoot Source Notes and Roll", a_shootSourceSideNoteAndRoll);
         
