@@ -96,7 +96,7 @@ public class RobotContainer
     // Shooter-Intake commands
 
     // Shooter starts fast and then the amp does 1-second later both at full speed while the Left Bumper is pressed
-    private final ParallelCommandGroup c_shootFast = s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()));
+    private final ParallelCommandGroup c_shootFast = s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()));
 
     // Same as c_shootFast above but it stops the motors after 3 seconds
     private final ParallelDeadlineGroup c_shootFastAuto = new ParallelDeadlineGroup(new WaitCommand(4), c_shootFast);
