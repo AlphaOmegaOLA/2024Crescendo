@@ -202,9 +202,10 @@ public class RevSwerve extends SubsystemBase
 
     @Override
     public void periodic() 
-    {
+    {     /*
         SmartDashboard.putData("Swerve Drive", new Sendable() 
         {
+        
                 @Override
                 public void initSendable(SendableBuilder builder) 
                 {
@@ -225,7 +226,7 @@ public class RevSwerve extends SubsystemBase
                     builder.addDoubleProperty("Robot Angle", () -> getYaw().getRadians(), null);
                 }
             }); 
-
+            */
             m_field.setRobotPose(swerveOdometry.getPoseMeters());
     }
 }
