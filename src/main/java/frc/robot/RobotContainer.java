@@ -83,6 +83,9 @@ public class RobotContainer
     // Microsoft Life cam on arm
     private final UsbCamera usbcamera;
 
+    // Autonomous menu
+    private final SendableChooser<String> autoChooser = new SendableChooser<>();
+
     /* Commands */
 
     // Arm states
@@ -97,26 +100,85 @@ public class RobotContainer
     private final ParallelCommandGroup c_shootFast = s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()));
 
     // Same as c_shootFast above but it stops the motors after 3 seconds
-    private final ParallelDeadlineGroup c_shootFastAuto = new ParallelDeadlineGroup(
-        new WaitCommand(3), 
-        s_Shooter.fast().alongWith(
-            new WaitCommand(.5).andThen(s_Intake.fast())));
+    private final ParallelDeadlineGroup c_shootFastAuto = new ParallelDeadlineGroup(new WaitCommand(4), c_shootFast);
 
     // Shooter and intake start simultaneoulsy and run half speed while the right button is pressed
     private final ParallelCommandGroup c_shootSlow = s_Shooter.slow().alongWith(s_Intake.slow());  
 
-    // Intake at full speed while the joystick is pressed
-    private final Command c_intakeFast = s_Intake.fast();
-
     // Intake at full speed until the photoeye detects a note
     private final Command c_intakeNote = s_Intake.fast().until(s_Intake::hasNote);
 
-    // Intake at full speed with a 2-second timeout - For testing need to switch to intakeNote and delete
-    private final Command c_intakeFastAuto = s_Intake.fast();
-
     // Zero out the gyro at the end of the autonomous period
     private final Command c_zeroGyro = s_Swerve.setGyroToZero();
-        
+
+    /* Auto Commands */
+
+    private final Command a_rollBackToNote = new AutoDriveCommand(s_Swerve, "backward", 76.375, 1.8);
+    private final Command a_rollForwardToSpeakerLine = new AutoDriveCommand(s_Swerve, "forward", 76.375, 1.8);
+    private final Command a_rollRightInFrontOfNote = new AutoDriveCommand(s_Swerve, "right", 57, 1.5);
+    private final Command a_rollLeftInFrontOfNote = new AutoDriveCommand(s_Swerve, "left", 57, 1.5);   
+
+    // Shoot a pre-loaded note and remain stationary
+    private final SequentialCommandGroup a_shootOnly = new SequentialCommandGroup(
+        c_speakerAngle,
+        c_shootFastAuto);    
+
+    // Shoot pre-loaded note from the center, roll back, grab center note, roll forward, and shoot
+    private final SequentialCommandGroup a_shootCenterNotes = new SequentialCommandGroup(
+        a_shootOnly,
+        c_floorAngle,
+        c_intakeNote,
+        a_rollBackToNote,
+        c_speakerAngle,
+        a_rollForwardToSpeakerLine,
+        c_shootFastAuto);
+
+    // Lower the arm to the floor, roll right, roll back and grab center note, roll forward, 
+    // roll left to the center, and shoot
+    private final SequentialCommandGroup a_shootAmpNote = new SequentialCommandGroup(
+        c_floorAngle,
+        a_rollRightInFrontOfNote,
+        c_intakeNote,
+        a_rollBackToNote,
+        c_speakerAngle,
+        a_rollLeftInFrontOfNote,
+        a_rollForwardToSpeakerLine,
+        c_shootFastAuto);
+
+    // Lower the arm to the floor, roll right, roll back and grab center note, roll forward, 
+    // roll left to the center, and shoot
+    private final SequentialCommandGroup a_shootSourceNote = new SequentialCommandGroup(
+        c_floorAngle,
+        a_rollLeftInFrontOfNote,
+        c_intakeNote,
+        a_rollBackToNote,
+        c_speakerAngle,
+        a_rollRightInFrontOfNote,
+        a_rollForwardToSpeakerLine,
+        c_shootFastAuto);
+
+    // Combine all shooting sequences to score 4 notes
+    private final SequentialCommandGroup a_fourNoteAuto = new SequentialCommandGroup(
+        a_shootCenterNotes,
+        a_shootAmpNote,
+        a_shootSourceNote,
+        c_zeroGyro);
+
+    // Shoot pre-loaded note, center note, and roll back
+    private final SequentialCommandGroup a_shootCenterNotesAndRoll = new SequentialCommandGroup(
+        a_shootCenterNotes,
+        c_sourceAngle,
+        a_rollBackToNote,
+        c_zeroGyro);
+
+    private final SequentialCommandGroup a_shootAmpSideNoteAndRoll = new SequentialCommandGroup(
+        a_shootOnly,
+        new AutoDriveCommand(s_Swerve, "backward", 120, 4));
+
+    private final SequentialCommandGroup a_shootSourceSideNoteAndRoll = new SequentialCommandGroup(
+        a_shootOnly,
+        new AutoDriveCommand(s_Swerve, "backward", 108, 4));
+    
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
@@ -131,8 +193,12 @@ public class RobotContainer
         
         // Pathplanner auto builder from commands in the deploy/pathplanner
         // Default auto will be Commands.none()
-        autoChooser = AutoBuilder.buildAutoChooser(); 
+        //autoChooser = AutoBuilder.buildAutoChooser(); 
         SmartDashboard.putData("Auto Mode", autoChooser);
+        autoChooser.addOption("4 Note Auto", a_fourNoteAuto);
+        autoChooser.setDefaultOption("Shoot Only", a_shootOnly);
+        autoChooser.addOption("Shoot Center Notes and Roll", a_shootCenterNotesAndRoll);
+        autoChooser.addOption("Shoot Center Notes", a_shootCenterNotes);
         
         // Sets up Swerve with a dampener tied to the right bumper button
         s_Swerve.setDefaultCommand(
