@@ -129,8 +129,9 @@ public class RobotContainer
         new ParallelDeadlineGroup(new WaitCommand(4), 
             s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))),
         new InstantCommand(() -> States.armState = States.ArmStates.Floor),
-        s_Intake.fast().until(s_Intake::hasNote),
-        new AutoDriveCommand(s_Swerve, "backward", 76.375, 1.8),
+        new ParallelCommandGroup(
+            s_Intake.fast().until(s_Intake::hasNote),
+            new AutoDriveCommand(s_Swerve, "backward", 76.375, 1.8)),
         new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
         new AutoDriveCommand(s_Swerve, "forward", 76.375, 1.8),
         new ParallelDeadlineGroup(new WaitCommand(4), 
