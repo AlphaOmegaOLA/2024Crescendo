@@ -121,20 +121,20 @@ public class RobotContainer
     private final SequentialCommandGroup a_shootOnly = new SequentialCommandGroup(
         new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
         new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()))));    
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))));    
 
     // Shoot pre-loaded note from the center, roll back, grab center note, roll forward, and shoot
     private final SequentialCommandGroup a_shootCenterNotes = new SequentialCommandGroup(
         new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
         new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()))),
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))),
         new InstantCommand(() -> States.armState = States.ArmStates.Floor),
         s_Intake.fast().until(s_Intake::hasNote),
         new AutoDriveCommand(s_Swerve, "backward", 76.375, 1.8),
         new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
         new AutoDriveCommand(s_Swerve, "forward", 76.375, 1.8),
         new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()))));
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))));
 
     // Lower the arm to the floor, roll right, roll back and grab center note, roll forward, 
     // roll left to the center, and shoot
@@ -147,7 +147,7 @@ public class RobotContainer
         new AutoDriveCommand(s_Swerve, "left", 57, 1.5),
         new AutoDriveCommand(s_Swerve, "forward", 76.375, 1.8),
         new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()))));
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))));
 
     // Lower the arm to the floor, roll right, roll back and grab center note, roll forward, 
     // roll left to the center, and shoot
@@ -160,7 +160,7 @@ public class RobotContainer
         new AutoDriveCommand(s_Swerve, "right", 57, 1.5),
         new AutoDriveCommand(s_Swerve, "forward", 76.375, 1.8),
         new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()))));
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))));
 
     // Combine all shooting sequences to score 4 notes
     private final SequentialCommandGroup a_fourNoteAuto = new SequentialCommandGroup(
@@ -168,7 +168,7 @@ public class RobotContainer
         new SequentialCommandGroup(
             new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
             new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()))),
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))),
             new InstantCommand(() -> States.armState = States.ArmStates.Floor),
             s_Intake.fast().until(s_Intake::hasNote),
             new AutoDriveCommand(s_Swerve, "backward", 76.375, 1.8),
@@ -184,7 +184,7 @@ public class RobotContainer
             new AutoDriveCommand(s_Swerve, "left", 57, 1.5),
             new AutoDriveCommand(s_Swerve, "forward", 76.375, 1.8),
             new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast())))),
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast())))),
         // Shoot Source Note    
         new SequentialCommandGroup(
             new InstantCommand(() -> States.armState = States.ArmStates.Floor),
@@ -195,7 +195,7 @@ public class RobotContainer
             new AutoDriveCommand(s_Swerve, "right", 57, 1.5),
             new AutoDriveCommand(s_Swerve, "forward", 76.375, 1.8),
             new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast())))),
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast())))),
         s_Swerve.setGyroToZero());
 
     // Shoot pre-loaded note, center note, and roll back
@@ -204,7 +204,7 @@ public class RobotContainer
         new SequentialCommandGroup(
             new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
             new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast()))),
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))),
             new InstantCommand(() -> States.armState = States.ArmStates.Floor),
             s_Intake.fast().until(s_Intake::hasNote),
             new AutoDriveCommand(s_Swerve, "backward", 76.375, 1.8),
@@ -218,14 +218,14 @@ public class RobotContainer
         new SequentialCommandGroup(
             new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
             new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast())))),
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast())))),
         new AutoDriveCommand(s_Swerve, "backward", 120, 4));
 
     private final SequentialCommandGroup a_shootSourceSideNoteAndRoll = new SequentialCommandGroup(
         new SequentialCommandGroup(
         new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
         new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(.5).andThen(s_Intake.fast())))),
+            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast())))),
         new AutoDriveCommand(s_Swerve, "backward", 108, 4));
 
         
