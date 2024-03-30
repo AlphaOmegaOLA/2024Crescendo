@@ -6,11 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -22,16 +17,6 @@ import frc.robot.subsystems.ShooterIntake.Shooter;
 import frc.robot.subsystems.swerve.rev.RevSwerve;
 import frc.robot.constants.ControllerMap;
 import frc.robot.commands.*;
-
-import java.time.Instant;
-
-/* PathPlanner */
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -82,6 +67,9 @@ public class RobotContainer
     private final Intake s_Intake = new Intake();
     private final Shooter s_Shooter = new Shooter();
 
+    /* Autonomous Commands */
+    private final RobotSkills autos = new RobotSkills(s_Swerve, s_Intake, s_Shooter);
+
     // Microsoft Life cam on arm
     private final UsbCamera usbcamera;
 
@@ -92,172 +80,16 @@ public class RobotContainer
     private final InstantCommand c_speakerAngle = new InstantCommand(() -> States.armState = States.ArmStates.Speaker);
     private final InstantCommand c_sourceAngle = new InstantCommand(() -> States.armState = States.ArmStates.Source);
     private final InstantCommand c_ampAngle = new InstantCommand(() -> States.armState = States.ArmStates.Amp);
-
-    // Shooter-Intake commands
-
-    // Shooter starts fast and then the amp does 1-second later both at full speed while the Left Bumper is pressed
-    private final ParallelCommandGroup c_shootFast = s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()));
-
-    // Same as c_shootFast above but it stops the motors after 3 seconds
-    private final ParallelDeadlineGroup c_shootFastAuto = new ParallelDeadlineGroup(new WaitCommand(4), c_shootFast);
-    
-    // Shooter and intake start simultaneoulsy and run half speed while the right button is pressed
-    private final ParallelCommandGroup c_shootSlow = s_Shooter.slow().alongWith(s_Intake.slow());  
-
-    // Intake at full speed until the photoeye detects a note
-    private final Command c_intakeNote = s_Intake.fast().until(s_Intake::hasNote);
-
-    // Zero out the gyro at the end of the autonomous period
-    private final Command c_zeroGyro = s_Swerve.setGyroToZero();
-
-    /* Auto Commands */
-
-    private final double backwardsRoll = 51.875;
-    private final double forwardRoll = 57.875;
-    private final double sideRoll = 54;
-
-    private final Command a_rollBackToNote = new AutoDriveCommand(s_Swerve, "backward", backwardsRoll, 1.8);
-    private final Command a_rollForwardToSpeakerLine = new AutoDriveCommand(s_Swerve, "forward", forwardRoll, 1.8);
-    private final Command a_rollRightInFrontOfNote = new AutoDriveCommand(s_Swerve, "right", sideRoll, 1.5);
-    private final Command a_rollLeftInFrontOfNote = new AutoDriveCommand(s_Swerve, "left", sideRoll, 1.5);   
-
-    // Shoot a pre-loaded note and remain stationary
-    private final SequentialCommandGroup a_shootOnly = new SequentialCommandGroup(
-        new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-        new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))));    
-
-    // Shoot pre-loaded note from the center, roll back, grab center note, roll forward, and shoot
-    private final SequentialCommandGroup a_shootCenterNotes = new SequentialCommandGroup(
-        new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-        new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))),
-        new InstantCommand(() -> States.armState = States.ArmStates.Floor),
-        new ParallelCommandGroup(
-            s_Intake.fast().until(s_Intake::hasNote),
-            new AutoDriveCommand(s_Swerve, "backward", backwardsRoll, 1.8)),
-        new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-        new AutoDriveCommand(s_Swerve, "forward", forwardRoll, 1.8),
-        new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))));
-
-    // Lower the arm to the floor, roll right, roll back and grab center note, roll forward, 
-    // roll left to the center, and shoot
-    private final SequentialCommandGroup a_shootAmpNote = new SequentialCommandGroup(
-        new InstantCommand(() -> States.armState = States.ArmStates.Floor),
-        new AutoDriveCommand(s_Swerve, "right", sideRoll, 1.5),
-        s_Intake.fast().until(s_Intake::hasNote),
-        new AutoDriveCommand(s_Swerve, "backward", backwardsRoll, 1.8),
-        new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-        new AutoDriveCommand(s_Swerve, "left", sideRoll, 1.5),
-        new AutoDriveCommand(s_Swerve, "forward", forwardRoll, 1.8),
-        new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))));
-
-    // Lower the arm to the floor, roll right, roll back and grab center note, roll forward, 
-    // roll left to the center, and shoot
-    private final SequentialCommandGroup a_shootSourceNote = new SequentialCommandGroup(
-        new InstantCommand(() -> States.armState = States.ArmStates.Floor),
-        new AutoDriveCommand(s_Swerve, "left", sideRoll, 1.5),
-        s_Intake.fast().until(s_Intake::hasNote),
-        new AutoDriveCommand(s_Swerve, "backward", backwardsRoll, 1.8),
-        new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-        new AutoDriveCommand(s_Swerve, "right", sideRoll, 1.5),
-        new AutoDriveCommand(s_Swerve, "forward", forwardRoll, 1.8),
-        new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))));
-
-    // Combine all shooting sequences to score 4 notes
-    private final SequentialCommandGroup a_fourNoteAuto = new SequentialCommandGroup(
-        // Shoot Center Notes
-        new SequentialCommandGroup(
-            new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-            new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))),
-            new InstantCommand(() -> States.armState = States.ArmStates.Floor),
-            s_Intake.fast().until(s_Intake::hasNote),
-            new AutoDriveCommand(s_Swerve, "backward", backwardsRoll, 1.8),
-            new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-            new AutoDriveCommand(s_Swerve, "forward", forwardRoll, 1.8)),
-        // Shoot Amp Note   
-        new SequentialCommandGroup(
-            new InstantCommand(() -> States.armState = States.ArmStates.Floor),
-            new AutoDriveCommand(s_Swerve, "right", sideRoll, 1.5),
-            s_Intake.fast().until(s_Intake::hasNote),
-            new AutoDriveCommand(s_Swerve, "backward", backwardsRoll, 1.8),
-            new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-            new AutoDriveCommand(s_Swerve, "left", sideRoll, 1.5),
-            new AutoDriveCommand(s_Swerve, "forward", forwardRoll, 1.8),
-            new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast())))),
-        // Shoot Source Note    
-        new SequentialCommandGroup(
-            new InstantCommand(() -> States.armState = States.ArmStates.Floor),
-            new AutoDriveCommand(s_Swerve, "left", sideRoll, 1.5),
-            s_Intake.fast().until(s_Intake::hasNote),
-            new AutoDriveCommand(s_Swerve, "backward", backwardsRoll, 1.8),
-            new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-            new AutoDriveCommand(s_Swerve, "right", sideRoll, 1.5),
-            new AutoDriveCommand(s_Swerve, "forward", forwardRoll, 1.8),
-            new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast())))),
-        s_Swerve.setGyroToZero());
-
-    // Shoot pre-loaded note, center note, and roll back
-    private final SequentialCommandGroup a_shootCenterNotesAndRoll = new SequentialCommandGroup(
-                // Shoot Center Notes
-        new SequentialCommandGroup(
-            new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-            new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()))),
-            new InstantCommand(() -> States.armState = States.ArmStates.Floor),
-            s_Intake.fast().until(s_Intake::hasNote),
-            new AutoDriveCommand(s_Swerve, "backward", backwardsRoll, 1.8),
-            new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-            new AutoDriveCommand(s_Swerve, "forward", forwardRoll, 1.8)),
-        new InstantCommand(() -> States.armState = States.ArmStates.Source),
-        new AutoDriveCommand(s_Swerve, "backward", backwardsRoll, 1.8),
-        s_Swerve.setGyroToZero());
-
-    private final SequentialCommandGroup a_shootAmpSideNoteAndRoll = new SequentialCommandGroup(
-        new SequentialCommandGroup(
-            new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-            new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast())))),
-        new AutoDriveCommand(s_Swerve, "backward", 120, 4));
-
-    private final SequentialCommandGroup a_shootSourceSideNoteAndRoll = new SequentialCommandGroup(
-        new SequentialCommandGroup(
-        new InstantCommand(() -> States.armState = States.ArmStates.Speaker),
-        new ParallelDeadlineGroup(new WaitCommand(4), 
-            s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast())))),
-        new AutoDriveCommand(s_Swerve, "backward", 108, 4));
-
         
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
-        // PathPlanner registered commands
-        /* 
-        NamedCommands.registerCommand("Arm Amp Angle", c_ampAngle);
-        NamedCommands.registerCommand("Arm Floor Angle", c_floorAngle);
-        NamedCommands.registerCommand("Arm Source Angle", c_sourceAngle);
-        NamedCommands.registerCommand("Arm Speaker Angle", c_speakerAngle);
-        NamedCommands.registerCommand("Intake Note", c_intakeNote);
-        NamedCommands.registerCommand("Shoot Fast", c_shootFastAuto);
-        NamedCommands.registerCommand("Zero Gyro", c_zeroGyro);
-        */
-        
-        // Pathplanner auto builder from commands in the deploy/pathplanner
-        // Default auto will be Commands.none()
-        //autoChooser = AutoBuilder.buildAutoChooser(); 
         autoChooser = new SendableChooser<>();
         SmartDashboard.putData("Auto Mode", autoChooser);
-        autoChooser.addOption("4 Note Auto", a_fourNoteAuto);
-        autoChooser.setDefaultOption("Shoot Only", a_shootOnly);
-        autoChooser.addOption("Shoot Center Notes", a_shootCenterNotes);
-        autoChooser.addOption("Shoot Amp Notes and Roll", a_shootAmpSideNoteAndRoll);
-        autoChooser.addOption("Shoot Source Notes and Roll", a_shootSourceSideNoteAndRoll);
+        autoChooser.setDefaultOption("Shoot Only", autos.shootOnly());
+        autoChooser.addOption("4 Note Auto", autos.fourNoteAuto());
+        autoChooser.addOption("Shoot Center Notes", autos.shootCenterNotes());
+        autoChooser.addOption("Shoot Source-Side Then Roll", autos.shootSourceSideandRoll());
         
         // Sets up Swerve with a dampener tied to the right bumper button
         s_Swerve.setDefaultCommand(
@@ -330,8 +162,8 @@ public class RobotContainer
         arm_speaker.onTrue(c_speakerAngle);
         arm_amp.onTrue(c_ampAngle);
 
-        shootSpeaker.whileTrue(c_shootFast);
-        shootAmp.whileTrue(c_shootSlow);
+        shootSpeaker.whileTrue(autos.shootFast());
+        shootAmp.whileTrue(autos.shootSlow());
     }       
         
     /**
