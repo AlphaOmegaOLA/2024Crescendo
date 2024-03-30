@@ -50,14 +50,14 @@ public class RobotSkills
 
     public Command shootFast()
     {
-        return s_Shooter.fast().alongWith(new WaitCommand(1).andThen(s_Intake.fast()));
+        return s_Shooter.fast().alongWith(new WaitCommand(1.5).andThen(s_Intake.fast()));
     }
 
     public Command shootFastAuto()
     {
         return new ParallelDeadlineGroup
         (
-            new WaitCommand(4), 
+            new WaitCommand(2.5), 
             shootFast()
         );
     }
@@ -93,6 +93,7 @@ public class RobotSkills
             this.speakerAngle(),
             this.shootFastAuto(),
             this.floorAngle(),
+            new WaitCommand(.5),
             new ParallelCommandGroup
             (
                 this.intakeNote(),
@@ -128,7 +129,7 @@ public class RobotSkills
                 constants.sideRollInches, 
                 constants.sideRollSeconds
             ),
-            new ParallelRaceGroup
+            new ParallelCommandGroup
             (
                 this.intakeNote(),
                 new AutoDriveCommand
@@ -152,6 +153,16 @@ public class RobotSkills
                 constants.forwardRollSeconds
             ),
             this.shootFastAuto()
+        );
+    }
+
+    public Command threeNoteAuto()
+    {
+        return new SequentialCommandGroup
+        (
+            this.shootCenterNotes(),
+            this.shootSideNote("left"),
+            this.zeroGyro()
         );
     }
 

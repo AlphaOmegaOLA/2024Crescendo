@@ -51,7 +51,7 @@ public class Intake extends SubsystemBase
     {
         // Can invert this with ! if wiring is backwards
         //return !photoEye.get();
-        if (photoEye.getValue() > 200)
+        if (photoEye.getValue() > 206)
         {
             return false;
         }

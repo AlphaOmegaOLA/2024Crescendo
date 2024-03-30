@@ -88,6 +88,7 @@ public class RobotContainer
         SmartDashboard.putData("Auto Mode", autoChooser);
         autoChooser.setDefaultOption("Shoot Only", autos.shootOnly());
         autoChooser.addOption("4 Note Auto", autos.fourNoteAuto());
+        autoChooser.addOption("3 Note Auto", autos.threeNoteAuto());
         autoChooser.addOption("Shoot Center Notes", autos.shootCenterNotes());
         autoChooser.addOption("Shoot Source-Side Then Roll", autos.shootSourceSideandRoll());
         
