@@ -134,7 +134,7 @@ public class RobotSkills
                 this.intakeNote(),
                 new AutoDriveCommand
                 (
-                    s_Swerve, "backwards", 
+                    s_Swerve, "backward", 
                     constants.backwardsRollInches, 
                     constants.backwardsRollSeconds
                 )
@@ -184,7 +184,7 @@ public class RobotSkills
             this.shootFastAuto(),
             new AutoDriveCommand
             (
-                s_Swerve, "backwards",
+                s_Swerve, "backward",
                 constants.backwardsRollSourceInches,
                 constants.backwardsRollSourceSeconds
             )

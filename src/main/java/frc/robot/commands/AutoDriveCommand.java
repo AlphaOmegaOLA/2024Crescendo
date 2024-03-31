@@ -30,11 +30,11 @@ public class AutoDriveCommand extends CommandBase {
                 this.direction = new Translation2d(-speed, 0);
                 break;
             case "right":
-                this.direction = new Translation2d(0, speed);
+                this.direction = new Translation2d(0, -speed);
                 break;
             case "left":
             default:
-                this.direction = new Translation2d(0, -speed);
+                this.direction = new Translation2d(0, speed);
                 break;
         }
 

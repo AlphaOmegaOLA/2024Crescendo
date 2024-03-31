@@ -15,6 +15,6 @@ public class RobotSkillsConstants
     public double sideRollSeconds = 1.8;
 
     // Distance and time for the source-side shoot and roll
-    public double backwardsRollSourceInches = 156;
+    public double backwardsRollSourceInches = 60; // I updated this so it should be close now
     public double backwardsRollSourceSeconds = 8;
 }
