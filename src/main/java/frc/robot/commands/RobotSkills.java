@@ -161,7 +161,7 @@ public class RobotSkills
         return new SequentialCommandGroup
         (
             this.shootCenterNotes(),
-            this.shootSideNote("left"),
+            this.shootSideNote("right"),
             this.zeroGyro()
         );
     }
