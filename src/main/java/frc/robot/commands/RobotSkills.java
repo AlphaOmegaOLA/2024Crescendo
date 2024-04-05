@@ -48,6 +48,11 @@ public class RobotSkills
         return Commands.runOnce(() -> States.armState = States.ArmStates.Amp);
     }
 
+    public Command longshotAngle()
+    {
+        return Commands.runOnce(() -> States.armState = States.ArmStates.Longshot);
+    }
+
     public Command shootFast()
     {
         return s_Shooter.fast().alongWith(new WaitCommand(1.5).andThen(s_Intake.fast()));
@@ -91,6 +96,7 @@ public class RobotSkills
     {
         return new SequentialCommandGroup(
             this.speakerAngle(),
+            new WaitCommand(.5),
             this.shootFastAuto(),
             this.floorAngle(),
             new WaitCommand(.5),
@@ -108,6 +114,26 @@ public class RobotSkills
                 constants.forwardRollInches, 
                 constants.forwardRollSeconds
             ),
+            this.shootFastAuto()
+        );
+    }
+
+    public Command shootCenterNotesLong()
+    {
+        return new SequentialCommandGroup(
+            this.speakerAngle(),
+            this.shootFastAuto(),
+            this.floorAngle(),
+            new WaitCommand(.5),
+            new ParallelCommandGroup
+            (
+                this.intakeNote(),
+                new AutoDriveCommand(s_Swerve, "backward", 
+                    constants.backwardsRollInches, 
+                    constants.backwardsRollSeconds)
+            ),
+            this.longshotAngle(),
+            new WaitCommand(2),
             this.shootFastAuto()
         );
     }
@@ -152,6 +178,41 @@ public class RobotSkills
                 constants.forwardRollInches, 
                 constants.forwardRollSeconds
             ),
+            this.shootFastAuto()
+        );
+    }
+
+    public Command shootSideNoteLong(String direction)
+    {
+        String outDirection = direction;
+        String returnDirection = "left";
+        if (direction == "left")
+        {
+            returnDirection = "right";
+        }
+        return new SequentialCommandGroup
+        (
+            this.floorAngle(),
+            new AutoDriveCommand
+            (
+                s_Swerve, outDirection, 
+                constants.sideRollInches, 
+                constants.sideRollSeconds
+            ),
+            new ParallelCommandGroup
+            (
+                new ParallelRaceGroup(
+                    new WaitCommand(4),
+                    this.intakeNote()
+                ), 
+                new AutoDriveCommand
+                (
+                    s_Swerve, "backward", 
+                    constants.backwardsRollInches, 
+                    constants.backwardsRollSeconds
+                )
+            ),
+            this.longshotAngle(),
             this.shootFastAuto()
         );
     }

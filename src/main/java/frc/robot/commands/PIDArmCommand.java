@@ -51,6 +51,8 @@ public class PIDArmCommand extends Command
         case Floor:
             PIDArm.setAngle(ShooterIntakeConstants.Arm.ARM_FLOOR_ANGLE);
             break;
+        case Longshot:
+            PIDArm.setAngle(ShooterIntakeConstants.Arm.ARM_LONGSHOT_ANGLE);
     }
 
     PIDArm.runArm(armController.calculate(PIDArm.getAngle(), PIDArm.setpoint));
