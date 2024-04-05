@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -122,6 +123,7 @@ public class RobotSkills
     {
         return new SequentialCommandGroup(
             this.speakerAngle(),
+            new WaitCommand(.5),
             this.shootFastAuto(),
             this.floorAngle(),
             new WaitCommand(.5),
@@ -133,7 +135,7 @@ public class RobotSkills
                     constants.backwardsRollSeconds)
             ),
             this.longshotAngle(),
-            new WaitCommand(2),
+            new WaitCommand(.5),
             this.shootFastAuto()
         );
     }
@@ -185,11 +187,6 @@ public class RobotSkills
     public Command shootSideNoteLong(String direction)
     {
         String outDirection = direction;
-        String returnDirection = "left";
-        if (direction == "left")
-        {
-            returnDirection = "right";
-        }
         return new SequentialCommandGroup
         (
             this.floorAngle(),
@@ -213,16 +210,27 @@ public class RobotSkills
                 )
             ),
             this.longshotAngle(),
+            new WaitCommand(.5),
             this.shootFastAuto()
         );
     }
 
-    public Command threeNoteAuto()
+    public Command threeNoteRightAuto()
     {
         return new SequentialCommandGroup
         (
             this.shootCenterNotes(),
             this.shootSideNote("right"),
+            this.zeroGyro()
+        );
+    }
+
+    public Command threeNoteLeftAuto()
+    {
+        return new SequentialCommandGroup
+        (
+            this.shootCenterNotes(),
+            this.shootSideNote("left"),
             this.zeroGyro()
         );
     }
