@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,6 +61,8 @@ public class RobotContainer
     private final JoystickButton shootAmp = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
     // Left Bumper = Shoot Speaker (Shooter starts then Intake feeds 1 second later both at full speed)
     private final JoystickButton shootSpeaker = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+
+    private final JoystickButton shootSpeakerLong = new JoystickButton(driver, XboxController.Button.kX.value);
   
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
@@ -88,8 +91,11 @@ public class RobotContainer
         SmartDashboard.putData("Auto Mode", autoChooser);
         autoChooser.setDefaultOption("Shoot Only", autos.shootOnly());
         autoChooser.addOption("4 Note Auto", autos.fourNoteAuto());
+        autoChooser.addOption("4 Note Long Auto", autos.fourNoteLongAuto());
         autoChooser.addOption("3 Note Left Auto", autos.threeNoteLeftAuto());
         autoChooser.addOption("3 Note Right Auto", autos.threeNoteRightAuto());
+        autoChooser.addOption("3 Note Left Long Auto", autos.threeNoteLeftLongAuto());
+        autoChooser.addOption("3 Note Right Long Auto", autos.threeNoteRightLongAuto());
         autoChooser.addOption("Shoot Center Notes", autos.shootCenterNotes());
         autoChooser.addOption("Shoot Source-Side Then Roll", autos.shootSourceSideandRoll());
         
@@ -163,6 +169,7 @@ public class RobotContainer
         arm_floor.onTrue(c_floorAngle);
         arm_speaker.onTrue(c_speakerAngle);
         arm_amp.onTrue(c_ampAngle);
+        shootSpeakerLong.whileTrue(new InstantCommand(() -> States.armState = States.ArmStates.Longshot));
 
         shootSpeaker.whileTrue(autos.shootFast());
         shootAmp.whileTrue(autos.shootSlow());

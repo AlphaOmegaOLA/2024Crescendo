@@ -88,7 +88,7 @@ public class RobotSkills
         return new SequentialCommandGroup
         (
             this.speakerAngle(),
-            new WaitCommand(2),
+            new WaitCommand(5),
             this.shootFastAuto()
         );
     }
@@ -100,7 +100,7 @@ public class RobotSkills
             new WaitCommand(.5),
             this.shootFastAuto(),
             this.floorAngle(),
-            new WaitCommand(.5),
+            //new WaitCommand(.5),
             new ParallelCommandGroup
             (
                 this.intakeNote(),
@@ -184,9 +184,14 @@ public class RobotSkills
         );
     }
 
-    public Command shootSideNoteLong(String direction)
+ public Command shootSideNoteLong(String direction)
     {
         String outDirection = direction;
+        String returnDirection = "left";
+        if (direction == "left")
+        {
+            returnDirection = "right";
+        }
         return new SequentialCommandGroup
         (
             this.floorAngle(),
@@ -198,16 +203,20 @@ public class RobotSkills
             ),
             new ParallelCommandGroup
             (
-                new ParallelRaceGroup(
-                    new WaitCommand(4),
-                    this.intakeNote()
-                ), 
+                this.intakeNote(),
                 new AutoDriveCommand
                 (
                     s_Swerve, "backward", 
                     constants.backwardsRollInches, 
                     constants.backwardsRollSeconds
                 )
+            ),
+            this.speakerAngle(),
+            new AutoDriveCommand
+            (
+                s_Swerve, returnDirection, 
+                constants.sideRollInches,
+                constants.sideRollSeconds
             ),
             this.longshotAngle(),
             new WaitCommand(.5),
@@ -225,12 +234,32 @@ public class RobotSkills
         );
     }
 
+    public Command threeNoteRightLongAuto()
+    {
+        return new SequentialCommandGroup
+        (
+            this.shootCenterNotes(),
+            this.shootSideNoteLong("right"),
+            this.zeroGyro()
+        );
+    }
+
     public Command threeNoteLeftAuto()
     {
         return new SequentialCommandGroup
         (
             this.shootCenterNotes(),
             this.shootSideNote("left"),
+            this.zeroGyro()
+        );
+    }
+
+    public Command threeNoteLeftLongAuto()
+    {
+        return new SequentialCommandGroup
+        (
+            this.shootCenterNotes(),
+            this.shootSideNoteLong("left"),
             this.zeroGyro()
         );
     }
@@ -246,10 +275,22 @@ public class RobotSkills
         );
     }
 
+    public Command fourNoteLongAuto()
+    {
+        return new SequentialCommandGroup
+        (
+            this.shootCenterNotes(),
+            this.shootSideNoteLong("right"),
+            this.shootSideNoteLong("left"),
+            this.zeroGyro()
+        );
+    }
+
     public Command shootSourceSideandRoll()
     {
         return new SequentialCommandGroup
         (
+            this.speakerAngle(),
             this.shootFastAuto(),
             new AutoDriveCommand
             (

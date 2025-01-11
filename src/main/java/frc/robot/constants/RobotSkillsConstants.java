@@ -6,7 +6,7 @@ public class RobotSkillsConstants
     
     // Rolling measurements in inches
     public double backwardsRollInches = 13; //39
-    public double forwardRollInches = 15;
+    public double forwardRollInches = 13;
     public double sideRollInches = 14;
 
     // Rolling time in seconds

@@ -32,7 +32,7 @@ public final class ShooterIntakeConstants
         public static final double ARM_FLOOR_ANGLE = 91;
         public static final double ARM_SOURCE_ANGLE = 30.1;
         public static final double ARM_AMP_ANGLE = 1.3;
-        public static final double ARM_LONGSHOT_ANGLE = 55.0;
+        public static final double ARM_LONGSHOT_ANGLE = 65.0;
         public static final double ARM_SPEAKER_ANGLE = 80.1;
         public static final double ARM_CLIMB_ANGLE = 70.0;
 
